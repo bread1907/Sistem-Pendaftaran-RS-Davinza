@@ -6,42 +6,139 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Homepage</title>
 
-  <?php
-    include '../links.php';
-  ?>
+  <style>
+    * {
+      font-family: 'Lato', sans-serif;
+    }
+
+    body {
+      background-color: #F0F0F0;
+    }
+
+    /* === Custom Navbar Theme === */
+    :root {
+      --primary: #0077c0;
+      --text-secondary: #6B7280;
+      --border-color: #E5E7EB;
+      --surface: #F9FAFB;
+    }
+
+    .navbar-custom {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .nav-link-custom {
+      color: var(--text-secondary) !important;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    .nav-link-custom:hover {
+      color: var(--primary) !important;
+    }
+
+    .nav-link-active {
+      color: var(--primary) !important;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .btn-daftar {
+      color: #0077C0 !important;
+      border: 2px solid #0077C0 !important;
+      background-color: transparent !important;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+
+    .btn-daftar:hover {
+      background-color: #0077C0 !important;
+      color: white !important;
+    }
+
+
+    .btn-primary {
+      background-color: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: white !important;
+    }
+
+    .btn-primary:hover {
+      background-color: #005f9c !important;
+      border-color: #005f9c !important;
+    }
+
+    .btn-primary-custom {
+      background: var(--primary);
+      border: none;
+      color: white;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 8px 16px;
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%236B7280' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+
+    .quick-stats {
+      margin-top: -50px;
+      z-index: 11;
+      position: relative;
+    }
+  </style>
+
+  <?php include __DIR__ . '/../links.php'; ?>
+
+
 </head>
 
 <body>
-  <!-- Grey with black text -->
-<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-top">
-  <nav class="navbar navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-      <img src="../../Pictures/logo.jpg" alt="" width="55" height="40" class="d-inline-block align-text-top">
-      RS Davinza
-    </a>
-  </div>
-</nav>
-  <div class="container-fluid justify-content-center">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link active" href="#">Home</a>
-      </li>
-     <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Panduan Pasien
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item" href="#">Buat Janji Temu</a></li>
-            <li><a class="dropdown-item" href="#">Temukan Dokter</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Tentang Kami</a>
-      </li>
-    </ul>
-  </div>
-</nav>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container py-3">
+
+      <!-- Logo -->
+      <a class="d-flex align-items-center text-decoration-none" href="homepage.html">
+        <img src="../Pictures/davinza_logo_2.png" alt="Davinza Logo" width="65" height="70" class="me-3">
+      </a>
+
+      <!-- Mobile Toggler -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Menu -->
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-4 gap-3">
+          <li><a class="nav-link nav-link-active" href="homepage.html">Home</a></li>
+          <li><a class="nav-link nav-link-custom" href="medical_services.html">Pelayanan</a></li>
+          <li><a class="nav-link nav-link-custom" href="find_a_doctor.html">Temukan Dokter</a></li>
+          <li><a class="nav-link nav-link-custom" href="patient_portal.html">Fasilitas</a></li>
+          <li><a class="nav-link nav-link-custom" href="emergency_care.html">Buat Janji Temu</a></li>
+          <li><a class="nav-link nav-link-custom" href="about_davinza.html">Tentang Kami</a></li>
+        </ul>
+
+        <!-- CTA Buttons -->
+        <div class="d-none d-md-flex align-items-center gap-3 ms-auto">
+          <!-- Tombol DAFTAR -->
+          <button class="btn btn-daftar px-4" data-bs-toggle="modal" data-bs-target="#modalDaftar">
+            Daftar
+          </button>
+
+          <!-- Tombol LOGIN -->
+          <button style="background-color: #0077C0;" class="btn btn-primary px-4" data-bs-toggle="modal"
+            data-bs-target="#modalLogin">
+            Masuk
+          </button>
+        </div>
+  </nav>
+
+
+
 </body>
+
 </html>
