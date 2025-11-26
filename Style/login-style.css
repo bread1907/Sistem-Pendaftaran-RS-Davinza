@@ -1,0 +1,139 @@
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    /* Jarak atas dan bawah untuk menghindari header/footer */
+}
+
+.left-img {
+    background-image: url('../Pictures/picc2.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 20px 20px 0;
+    /* Sudut melengkung di kanan */
+}
+
+.left-img::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(1, 97, 156, 0.2), transparent);
+    pointer-events: none;
+}
+
+.card-login {
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-control:focus {
+    border-color: #0077C0;
+    box-shadow: 0 0 8px rgba(106, 90, 205, 0.5);
+}
+
+.btn-primary eee {
+    background: #0077C0;
+    border: none;
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.card-login h2 {
+    color: #0077C0;
+    /* Warna judul */
+    margin-bottom: 10px;
+}
+
+.card-login p {
+    font-size: 0.9rem;
+}
+
+.form-label {
+    color: #555;
+    /* Warna label */
+}
+
+/* Tambahan ikon pada input */
+.input-group-text {
+    background: #f8f9fa;
+    border-color: #0077C0;
+}
+
+@media (max-width: 768px) {
+    .left-img {
+        display: none;
+        /* Sembunyikan gambar di mobile */
+    }
+
+    .card-login {
+        width: 95%;
+    }
+}
+
+/* Section tambahan untuk meramaikan halaman */
+.additional-section {
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.additional-section h3 {
+    text-align: center;
+    color: #0077C0;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card i {
+    font-size: 2rem;
+    color: #0077C0;
+    margin-bottom: 10px;
+}
+
+.feature-card h5 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    color: #666;
+    font-size: 0.9rem;
+}

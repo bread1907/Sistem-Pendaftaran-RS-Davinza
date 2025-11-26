@@ -1,0 +1,81 @@
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    /* Jarak atas dan bawah untuk menghindari header/footer */
+    position: relative;
+    z-index: 1;
+}
+
+.left-img {
+    background-image: url('../Pictures/doctor.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 20px 20px 0;
+    
+    overflow: hidden;
+}
+
+.left-img::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(1, 97, 156, 0.2), transparent);
+    pointer-events: none;
+}
+
+.card-register {
+    width: 90%;
+    max-width: 600px;
+    /* Lebih lebar untuk form yang lebih banyak field */
+    border-radius: 20px;
+    /* Lebih melengkung */
+    padding: 40px;
+    /* Padding lebih besar untuk ruang */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    /* Shadow lebih dramatis */
+    backdrop-filter: blur(10px);
+    /* Efek blur untuk modern look */
+    background: rgba(255, 255, 255, 0.95);
+    /* Semi-transparan */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeInUp 0.8s ease-out;
+    /* Animasi masuk */
+}
+
+.card-register h2 {
+    color: #0077C0;
+    /* Warna judul */
+    margin-bottom: 10px;
+    animation: slideInLeft 0.6s ease-out 0.2s both;
+    /* Animasi judul */
+}
+
+.card-register p {
+    font-size: 0.9rem;
+    animation: slideInLeft 0.6s ease-out 0.4s both;
+    /* Animasi deskripsi */
+}
+
+.form-label {
+    color: #555;
+    /* Warna label */
+}
+
+/* Tambahan ikon pada input */
+.input-group-text {
+    background: #f8f9fa;
+    border-color: #0077C0;
+}
