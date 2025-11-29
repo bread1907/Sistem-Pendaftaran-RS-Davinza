@@ -1,4 +1,4 @@
-<?php include __DIR__ . "../Halaman//header.php"; ?>
+<?php include __DIR__ . "../Halaman/header.php"; ?>
 <style>
     .about-hero {
         background: url('../Pictures/davinza_banner2.jpg') center/cover no-repeat;

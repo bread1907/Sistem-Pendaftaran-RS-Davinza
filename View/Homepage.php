@@ -32,6 +32,25 @@
   </style>
 
 </head>
+<?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<?php if (isset($_SESSION['login_success'])): ?>
+<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.5)">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+        <h4 class="text-success">✔ Login Berhasil!</h4>
+        <p><?= $_SESSION['login_success']; ?></p>
+        <button class="btn btn-primary" onclick="document.querySelector('.modal').style.display='none'">
+            Tutup
+        </button>
+    </div>
+  </div>
+</div>
+<?php unset($_SESSION['login_success']); endif; ?>
 
 <body>
 
@@ -83,10 +102,10 @@
         <div class="swiper mySwiper rounded-4 shadow overflow-hidden">
           <div class="swiper-wrapper">
             <div class="swiper-slide">
-              <img src="../Pictures/piccc1.jpg" style="height:500px; width:100%; object-fit:cover;">
+              <img src="Pictures/piccc1.jpg" style="height:500px; width:100%; object-fit:cover;">
             </div>
             <div class="swiper-slide">
-              <img src="../Pictures/davinza_banner_3.jpg" style="height:500px; width:100%; object-fit:cover;">
+              <img src="Pictures/davinza_banner_3.jpg" style="height:500px; width:100%; object-fit:cover;">
             </div>
           </div>
         </div>
