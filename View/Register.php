@@ -154,7 +154,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                     <p class="text-center mt-4">
                         Sudah punya akun?
-                        <a href="login.php">Login</a>
+                        <a href="index.php?action=login">Login</a>
                     </p>
 
                 </form>

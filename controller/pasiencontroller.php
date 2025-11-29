@@ -88,14 +88,14 @@ public function Login() {
     $user = $this->pasienModel->getByEmail($email);
 
     if (!$user) {
-        $_SESSION['login_error'] = "Email tidak ditemukan!";
+        $_SESSION['login_error'] = "Email atau Password tidak ditemukan!";
         header("Location: index.php?action=login");
         exit;
     }
 
     // Cek password
     if (!password_verify($password, $user['password'])) {
-        $_SESSION['login_error'] = "Password salah!";
+        $_SESSION['login_error'] = "Email atau Password salah!";
         header("Location: index.php?action=login");
         exit;
     }

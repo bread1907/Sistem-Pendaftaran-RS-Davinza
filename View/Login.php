@@ -22,9 +22,15 @@ if (session_status() === PHP_SESSION_NONE) {
 <!-- ====================== POPUP LOGIN ====================== -->
 
 <?php if (isset($_SESSION['login_error'])): ?>
-<script>
-    alert("<?= $_SESSION['login_error']; ?>");
-</script>
+<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.6)">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+        <h4 class="text-error">✔ Login Tidak Berhasil!</h4>
+        <p><?= $_SESSION['login_error']; ?></p>
+        <button class="btn btn-primary mt-2" onclick="window.location='index.php?action=login'">Kembali</button>
+    </div>
+  </div>
+</div>
 <?php unset($_SESSION['login_error']); endif; ?>
 
 <?php if (isset($_SESSION['login_success'])): ?>
