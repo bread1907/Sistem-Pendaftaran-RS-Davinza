@@ -119,22 +119,24 @@
           <li><a class="nav-link nav-link-custom" href="find_a_doctor.html">Temukan Dokter</a></li>
           <li><a class="nav-link nav-link-custom" href="patient_portal.html">Fasilitas</a></li>
           <li><a class="nav-link nav-link-custom" href="emergency_care.html">Buat Janji Temu</a></li>
-          <li><a class="nav-link nav-link-custom" href="about_davinza.html">Tentang Kami</a></li>
+          <li><a class="nav-link nav-link-custom" href="Tentangkami.php">Tentang Kami</a></li>
         </ul>
 
         <!-- CTA Buttons -->
         <div class="d-none d-md-flex align-items-center gap-3 ms-auto">
-          <!-- Tombol DAFTAR -->
-          <button class="btn btn-daftar px-4" data-bs-toggle="modal" data-bs-target="#modalDaftar">
-            Daftar
-          </button>
 
-          <!-- Tombol LOGIN -->
-          <button style="background-color: #0077C0;" class="btn btn-primary px-4" data-bs-toggle="modal"
-            data-bs-target="#modalLogin">
-            Masuk
-          </button>
+            <!-- Tombol DAFTAR -->
+            <a href="Register.php" class="btn btn-daftar px-4">
+                Daftar
+            </a>
+
+            <!-- Tombol LOGIN -->
+            <a href="Login.php" class="btn btn-primary px-4" style="background-color: #0077C0;">
+                Masuk
+            </a>
+
         </div>
+
   </nav>
 
 
