@@ -130,4 +130,17 @@ public function Logout() {
     public function Tentang(){
         include "View/Tentangkami.php";
     }
+    public function Layanan(){
+        include "View/layanan.php";
+    }
+    public function Temu(){
+        include "View/jadwal_temu.php";
+    }
+    public function Profile(){
+        include "View/profile.php";
+    }
+    public function Fasilitas(){
+        include "View/fasilitas.php";
+    }
+
 }

@@ -71,7 +71,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </p>
 
         <div class="d-flex gap-3 mt-4 flex-wrap">
-          <a href="find_a_doctor.html" class="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 shadow">
+          <a href="index.php?action=janjitemu" class="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 shadow">
             Buat Janji Temu
           </a>
 

@@ -7,6 +7,7 @@ class PasienModel {
         $this->conn = $db;
     }
 
+    // Cek email apakah sudah terdaftar
     public function cekEmail($email) {
         $sql = "SELECT * FROM $this->table WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
@@ -15,6 +16,7 @@ class PasienModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
+    // Insert data pasien baru
     public function insert($data) {
         $sql = "INSERT INTO $this->table (email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -33,6 +35,7 @@ class PasienModel {
         return $stmt->execute();
     }
 
+    // Ambil data pasien berdasarkan email
     public function getByEmail($email) {
         $sql = "SELECT * FROM $this->table WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
@@ -40,4 +43,38 @@ class PasienModel {
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
+
+    // Ambil data pasien berdasarkan ID
+    public function getById($id) {
+        $sql = "SELECT * FROM $this->table WHERE pasien_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    // Update data pasien
+    public function update($id, $data) {
+        $sql = "UPDATE $this->table SET email=?, username=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, no_hp=? WHERE pasien_id=?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ssssssi",
+            $data['email'],
+            $data['username'],
+            $data['tanggal_lahir'],
+            $data['jenis_kelamin'],
+            $data['alamat'],
+            $data['no_hp'],
+            $id
+        );
+        return $stmt->execute();
+    }
+
+    // Hapus pasien
+    public function delete($id) {
+        $sql = "DELETE FROM $this->table WHERE pasien_id=?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
 }
+?>

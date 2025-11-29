@@ -5,16 +5,15 @@
     --primary: #0077C0;
 }
 
-/* Hero Section */
+/* HERO SECTION */
 .about-hero {
     position: relative;
-    background: url('Pictures/davinza_banner2.jpg') center center / cover no-repeat;
-    min-height: 350px;
+    background: url('Pictures/doktersenyum.jpg') center/cover no-repeat;
+    min-height: 700px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    z-index: 1;
     opacity: 0;
     transform: translateY(20px);
     transition: all 1s ease;
@@ -28,28 +27,71 @@
 .about-hero::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(59, 130, 246, 0.5);
-    backdrop-filter: brightness(0.8);
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.4);
     z-index: -1;
 }
 
-.about-hero h1 { position: relative; z-index: 2; }
+.about-hero h1 {
+    position: relative;
+    z-index: 2;
+}
 
-/* General sections */
-.about-section { line-height: 1.8; font-size: 17px; opacity: 0; transform: translateY(20px); transition: all 1s ease; }
-.about-section.visible { opacity: 1; transform: translateY(0); }
+/* GENERAL SECTIONS */
+.about-section {
+    line-height: 1.8;
+    font-size: 17px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease;
+    position: relative; /* penting */
+    z-index: 1; /* jangan menutupi navbar */
+}
 
-.feature-icon { font-size: 40px; color: var(--primary); opacity: 0; transform: translateY(20px); transition: all 1s ease; }
-.feature-icon.visible { opacity: 1; transform: translateY(0); }
+.about-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
-.rounded-img { border-radius: 15px; opacity: 0; transform: translateY(20px); transition: all 1s ease; }
-.rounded-img.visible { opacity: 1; transform: translateY(0); }
+/* Layanan Unggulan */
+.services-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+.service-card {
+    background:white;
+    border-radius: 10px;
+    width: 300px;
+    padding:20px;
+    text-align:center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.service-card i {
+    font-size: 40px;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px){
+    .services-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
 </style>
 
+<!-- HERO -->
 <section class="about-hero mb-5">
     <h1 class="fw-bold display-5">Tentang Kami</h1>
 </section>
@@ -94,22 +136,22 @@
 
     <!-- LAYANAN UNGGULAN -->
     <div class="my-5">
-        <h2 class="fw-bold mb-4 about-section">Layanan Unggulan Kami</h2>
-        <div class="row g-4">
-            <div class="col-md-4 text-center">
-                <i class="bi bi-heart-pulse feature-icon"></i>
-                <h5 class="fw-bold mt-3 about-section">IGD 24 Jam</h5>
-                <p class="text-secondary about-section">Tim gawat darurat profesional siap menangani kondisi kritis kapan saja.</p>
+        <h2 class="fw-bold mb-4 about-section text-center">Layanan Unggulan Kami</h2>
+        <div class="services-container">
+            <div class="service-card about-section">
+                <i class="bi bi-heart-pulse"></i>
+                <h5 class="fw-bold mt-3">IGD 24 Jam</h5>
+                <p>Tim gawat darurat profesional siap menangani kondisi kritis kapan saja.</p>
             </div>
-            <div class="col-md-4 text-center">
-                <i class="bi bi-people-fill feature-icon"></i>
-                <h5 class="fw-bold mt-3 about-section">Dokter Spesialis</h5>
-                <p class="text-secondary about-section">Berbagai dokter spesialis berpengalaman untuk kebutuhan kesehatan Anda.</p>
+            <div class="service-card about-section">
+                <i class="bi bi-people-fill"></i>
+                <h5 class="fw-bold mt-3">Dokter Spesialis</h5>
+                <p>Berbagai dokter spesialis berpengalaman untuk kebutuhan kesehatan Anda.</p>
             </div>
-            <div class="col-md-4 text-center">
-                <i class="bi bi-hospital feature-icon"></i>
-                <h5 class="fw-bold mt-3 about-section">Rawat Inap Nyaman</h5>
-                <p class="text-secondary about-section">Fasilitas rawat inap bersih, aman, dan nyaman untuk keluarga.</p>
+            <div class="service-card about-section">
+                <i class="bi bi-hospital"></i>
+                <h5 class="fw-bold mt-3">Rawat Inap Nyaman</h5>
+                <p>Fasilitas rawat inap bersih, aman, dan nyaman untuk keluarga.</p>
             </div>
         </div>
     </div>
@@ -144,12 +186,10 @@
 </div>
 
 <script>
-  // Animasi fade-in saat scroll
+  // Animasi fade-in tanpa menutupi dropdown
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if(entry.isIntersecting){
-        entry.target.classList.add('visible');
-      }
+      entry.target.classList.add('visible');
     });
   }, { threshold: 0.2 });
 
