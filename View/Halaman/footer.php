@@ -24,7 +24,7 @@
         <ul class="list-unstyled">
           <li class="mb-2"><a href="index.php?action=homepage" class="text-white-50 text-decoration-none">Home</a></li>
           <li class="mb-2"><a href="index.php?action=layanan" class="text-white-50 text-decoration-none">Pelayanan</a></li>
-          <li class="mb-2"><a href="find_a_doctor.html" class="text-white-50 text-decoration-none">Temukan Dokter</a></li>
+          <li class="mb-2"><a href="index.php?action=temukandokter" class="text-white-50 text-decoration-none">Temukan Dokter</a></li>
           <li class="mb-2"><a href="index.php?action=fasilitas" class="text-white-50 text-decoration-none">Fasilitas</a></li>
           <li class="mb-2"><a href="index.php?action=janjitemu" class="text-white-50 text-decoration-none">Buat Janji Temu</a></li>
           <li class="mb-2"><a href="index.php?action=tentangkami" class="text-white-50 text-decoration-none">Tentang Kami</a></li>

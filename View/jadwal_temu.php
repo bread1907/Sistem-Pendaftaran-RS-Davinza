@@ -14,7 +14,7 @@ include __DIR__ . "../../koneksi.php";
 // =============================
 $username   = $_SESSION['username'] ?? '';
 $pasien_id  = $_SESSION['pasien_id'] ?? 0;
-$nik        = $_SESSION['nik'] ?? ''; // NIK pasien
+$nik        = $_SESSION['nik'] ?? '';
 
 // =============================
 // AMBIL DOKTER DARI URL
@@ -46,6 +46,7 @@ while ($row = $r->fetch_assoc()) {
 .form-image { flex:1; border-radius:20px; overflow:hidden; }
 .form-image img { width:100%; height:100%; object-fit:cover; }
 .form-card { flex:1; background:white; padding:40px 30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+.text-danger { color: red; font-size: 0.9em; }
 </style>
 
 <section class="form-hero">
@@ -149,7 +150,7 @@ let dokterHariPraktek = [];
 
 // Jika dokter dari URL sudah diketahui
 <?php if ($dokterData): ?>
-dokterHariPraktek = "<?= $dokterData['hari_praktek'] ?>".split(',');
+dokterHariPraktek = "<?= $dokterData['hari_praktek'] ?>".split(',').map(h => h.trim());
 <?php endif; ?>
 
 // LOAD DOKTER SAAT SPESIALIS BERUBAH
@@ -157,6 +158,9 @@ document.getElementById('spesialis').addEventListener('change', function () {
     let spesialis = this.value;
     let dokterSelect = document.getElementById('dokter');
     dokterSelect.innerHTML = '<option value="">-- Pilih Dokter --</option>';
+    dokterHariPraktek = [];
+
+    if (!spesialis) return;
 
     fetch('requestajax.php?spesialis=' + encodeURIComponent(spesialis))
         .then(r => r.json())
@@ -176,9 +180,13 @@ document.getElementById('spesialis').addEventListener('change', function () {
 // DOKTER DIPILIH MANUAL
 document.getElementById('dokter').addEventListener('change', function () {
     let d = this.options[this.selectedIndex];
-    dokterHariPraktek = d.dataset.hari?.split(',') ?? [];
+    dokterHariPraktek = d.dataset.hari?.split(',').map(h => h.trim()) ?? [];
     document.getElementById('jam_temu').value =
-        `${d.dataset.jamMulai} - ${d.dataset.jamSelesai}`;
+        `${d.dataset.jamMulai || ''} - ${d.dataset.jamSelesai || ''}`;
+
+    // reset tanggal jika sebelumnya salah
+    document.getElementById('tanggal_temu').value = '';
+    document.getElementById('hariNotice').textContent = '';
 });
 
 // VALIDASI HARI PRAKTEK
@@ -186,8 +194,10 @@ document.getElementById('tanggal_temu').addEventListener('change', function () {
     let tanggal = new Date(this.value);
     let hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][tanggal.getDay()];
     let notice = document.getElementById('hariNotice');
+
     if (dokterHariPraktek.length && !dokterHariPraktek.includes(hari)) {
         notice.textContent = "Dokter hanya praktek hari: " + dokterHariPraktek.join(', ');
+        this.value = ''; // reset tanggal jika tidak valid
     } else {
         notice.textContent = "";
     }

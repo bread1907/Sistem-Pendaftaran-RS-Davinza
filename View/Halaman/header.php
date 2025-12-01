@@ -93,7 +93,7 @@ $current = $_GET['action'] ?? '';
 
       <!-- Right Side -->
       <div class="d-none d-md-flex align-items-center gap-3 ms-auto">
-        <?php if(!isset($_SESSION['user_id'])): ?>
+        <?php if(!isset($_SESSION['pasien_id'])): ?>
           <a href="index.php?action=register" class="btn btn-daftar px-4">Daftar</a>
           <a href="index.php?action=login" class="btn btn-primary px-4">Masuk</a>
         <?php else: ?>

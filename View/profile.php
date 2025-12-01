@@ -4,7 +4,7 @@
     <h2 class="mb-4 text-primary fw-bold">Profil Saya</h2>
 
     <?php
-    if(!isset($_SESSION['user_id'])){
+    if(!isset($_SESSION['pasien_id'])){
         echo "<div class='alert alert-warning'>Silakan login terlebih dahulu.</div>";
     } else {
         require_once __DIR__ . '/../Model/PasienModel.php';
@@ -14,8 +14,8 @@
         $pasienModel = new PasienModel($conn);
         $jadwalModel = new JadwalTemu($conn);
 
-        $user = $pasienModel->getById($_SESSION['user_id']);
-        $janjiTemu = $jadwalModel->getByPasienId($_SESSION['user_id']);
+        $user = $pasienModel->getById($_SESSION['pasien_id']);
+        $janjiTemu = $jadwalModel->getByPasienId($_SESSION['pasien_id']);
     ?>
 
     <!-- Profil Card -->
