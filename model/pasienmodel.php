@@ -56,15 +56,16 @@ class PasienModel {
 
     // Update data pasien
     public function update($id, $data) {
-        $sql = "UPDATE $this->table SET email=?, username=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, no_hp=? WHERE pasien_id=?";
+        $sql = "UPDATE $this->table SET email=?, username=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, no_hp=? nik=? WHERE pasien_id=?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ssssssi",
+        $stmt->bind_param("sssssssi",
             $data['email'],
             $data['username'],
             $data['tanggal_lahir'],
             $data['jenis_kelamin'],
             $data['alamat'],
             $data['no_hp'],
+            $data['nik'],
             $id
         );
         return $stmt->execute();

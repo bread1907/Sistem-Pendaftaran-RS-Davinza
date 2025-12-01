@@ -103,8 +103,9 @@ public function Login() {
     }
 
     // SIMPAN SESSION LOGIN (fix!)
-    $_SESSION['user_id']   = $user['pasien_id'];   // FIX
+    $_SESSION['pasien_id']   = $user['pasien_id'];   // FIX
     $_SESSION['username']  = $user['username'];    // FIX
+    $_SESSION['nik']       = $user['nik'];
 
     $_SESSION['login_success'] = "Selamat datang, " . $user['username'] . "!";
 

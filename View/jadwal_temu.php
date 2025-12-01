@@ -1,14 +1,11 @@
 <?php
 // =============================
-// SESSION FIX
+// SESSION & HEADER
 // =============================
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// =============================
-// INCLUDE FIX
-// =============================
 include __DIR__ . "/Halaman/header.php";
 include __DIR__ . "../../koneksi.php";
 
@@ -17,6 +14,7 @@ include __DIR__ . "../../koneksi.php";
 // =============================
 $username   = $_SESSION['username'] ?? '';
 $pasien_id  = $_SESSION['pasien_id'] ?? 0;
+$nik        = $_SESSION['nik'] ?? ''; // NIK pasien
 
 // =============================
 // AMBIL DOKTER DARI URL
@@ -68,7 +66,6 @@ while ($row = $r->fetch_assoc()) {
                     <label class="form-label">Spesialis</label>
                     <select id="spesialis" name="spesialis" class="form-select" required>
                         <option value="">-- Pilih Spesialis --</option>
-
                         <?php foreach ($spesialisList as $s): ?>
                             <option value="<?= $s ?>"
                                 <?= ($dokterData && $dokterData['spesialis'] == $s) ? 'selected' : '' ?>>
@@ -83,7 +80,6 @@ while ($row = $r->fetch_assoc()) {
                     <label class="form-label">Dokter</label>
                     <select id="dokter" name="dokter_id" class="form-select" required>
                         <option value="">-- Pilih Dokter --</option>
-
                         <?php if ($dokterData): ?>
                             <option value="<?= $dokterData['dokter_id'] ?>" selected
                                 data-hari="<?= $dokterData['hari_praktek'] ?>"
@@ -97,11 +93,18 @@ while ($row = $r->fetch_assoc()) {
 
                 <!-- HIDDEN -->
                 <input type="hidden" name="pasien_id" value="<?= intval($pasien_id) ?>">
+                <input type="hidden" name="nik" value="<?= htmlspecialchars($nik) ?>">
 
                 <!-- PASIEN -->
                 <div class="mb-3">
                     <label class="form-label">Nama Pasien</label>
                     <input type="text" class="form-control" value="<?= htmlspecialchars($username) ?>" readonly>
+                </div>
+
+                <!-- NIK -->
+                <div class="mb-3">
+                    <label class="form-label">NIK</label>
+                    <input type="text" class="form-control" value="<?= htmlspecialchars($nik) ?>" readonly>
                 </div>
 
                 <!-- PEMBAYARAN -->
@@ -174,7 +177,6 @@ document.getElementById('spesialis').addEventListener('change', function () {
 document.getElementById('dokter').addEventListener('change', function () {
     let d = this.options[this.selectedIndex];
     dokterHariPraktek = d.dataset.hari?.split(',') ?? [];
-
     document.getElementById('jam_temu').value =
         `${d.dataset.jamMulai} - ${d.dataset.jamSelesai}`;
 });
@@ -182,9 +184,8 @@ document.getElementById('dokter').addEventListener('change', function () {
 // VALIDASI HARI PRAKTEK
 document.getElementById('tanggal_temu').addEventListener('change', function () {
     let tanggal = new Date(this.value);
-    let hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][tanggal.getDay()];
+    let hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][tanggal.getDay()];
     let notice = document.getElementById('hariNotice');
-
     if (dokterHariPraktek.length && !dokterHariPraktek.includes(hari)) {
         notice.textContent = "Dokter hanya praktek hari: " + dokterHariPraktek.join(', ');
     } else {
