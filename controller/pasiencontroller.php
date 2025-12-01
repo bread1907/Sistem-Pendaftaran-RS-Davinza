@@ -29,6 +29,7 @@ class PasienController {
         $jenis_kelamin = $_POST['jenis_kelamin'];
         $alamat = trim($_POST['alamat']);
         $no_hp = trim($_POST['no_hp']);
+        $nik = trim($_POST['nik']);
 
         $errors = [];
 
@@ -59,7 +60,8 @@ class PasienController {
             'tanggal_lahir' => $tanggal_lahir,
             'jenis_kelamin' => $jenis_kelamin,
             'alamat' => $alamat,
-            'no_hp' => $no_hp
+            'no_hp' => $no_hp,
+            'nik' => $nik
         ]);
 
         if ($insert) {

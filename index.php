@@ -4,8 +4,10 @@ include "koneksi.php";
 
 include "controller/pasiencontroller.php";
 include "controller/jadwalcontroller.php";
+include "controller/doktercontroller.php";
 
 $pasiencontroller = new PasienController();
+$doktercontroller = new DokterController();
 $jadwalcontroller = new JadwalController($conn); // kirim koneksi ke controller
 
 $action = $_GET['action'] ?? 'homepage';
@@ -37,6 +39,9 @@ switch($action){
         break;
     case 'fasilitas':
         $pasiencontroller->Fasilitas();
+        break;
+    case 'temukandokter':
+        $doktercontroller->Temukan();
         break;
     default:
         $pasiencontroller->Homepage();

@@ -94,6 +94,14 @@ if (session_status() === PHP_SESSION_NONE) {
                                     <input type="text" name="username" class="form-control shadow-none" required>
                                 </div>
                             </div>
+                                                        <!-- NIK -->
+                            <div class="col-md-6 ps-0 mb-3">
+                                <label class="form-label">NIK</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input type="text" name="nik" class="form-control shadow-none" maxlength="20" required>
+                                </div>
+                            </div>
 
                             <div class="col-md-6 ps-0 mb-3">
                                 <label class="form-label">Password</label>

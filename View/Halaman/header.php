@@ -82,7 +82,7 @@ $current = $_GET['action'] ?? '';
       <ul class="navbar-nav ms-4 gap-3">
         <li><a class="nav-link <?=($current=='homepage'?'nav-link-active':'nav-link-custom')?>" href="index.php?action=homepage">Home</a></li>
         <li><a class="nav-link <?=($current=='layanan'?'nav-link-active':'nav-link-custom')?>" href="index.php?action=layanan">Pelayanan</a></li>
-        <li><a class="nav-link <?=($current=='finddoctor'?'nav-link-active':'nav-link-custom')?>" href="find_a_doctor.html">Temukan Dokter</a></li>
+        <li><a class="nav-link <?=($current=='finddoctor'?'nav-link-active':'nav-link-custom')?>" href="index.php?action=temukandokter">Temukan Dokter</a></li>
         <li><a class="nav-link <?=($current=='fasilitas'?'nav-link-active':'nav-link-custom')?>" href="index.php?action=fasilitas">Fasilitas</a></li>
         <li><a class="nav-link <?=($current=='janjitemu'?'nav-link-active':'nav-link-custom')?>" href="index.php?action=janjitemu">Buat Jadwal Temu</a></li>
 

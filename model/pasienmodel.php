@@ -18,18 +18,19 @@ class PasienModel {
 
     // Insert data pasien baru
     public function insert($data) {
-        $sql = "INSERT INTO $this->table (email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO $this->table (email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp, nik)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssssss",
+        $stmt->bind_param("ssssssss",
             $data['email'], 
             $data['username'], 
             $data['password'], 
             $data['tanggal_lahir'], 
             $data['jenis_kelamin'], 
             $data['alamat'], 
-            $data['no_hp']
+            $data['no_hp'],
+            $data['nik']
         );
 
         return $stmt->execute();

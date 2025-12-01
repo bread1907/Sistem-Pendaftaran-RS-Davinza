@@ -8,14 +8,12 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <!-- Swiper CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
   <style>
-    .blue-primary {
-      color:#0077C0 !important;
-    } 
-
-
+    .blue-primary { color:#0077C0 !important; }
     .btn-daftar {
       color: #0077C0 !important;
       border: 2px solid #0077C0 !important;
@@ -23,19 +21,29 @@
       font-weight: 600;
       border-radius: 8px;
     }
-
     .btn-daftar:hover {
       background-color: #0077C0 !important;
       color: white !important;
     }
-
   </style>
-
 </head>
+
 <?php 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Load koneksi database dulu
+require __DIR__ . "/../koneksi.php";
+
+// Load model dokter
+require_once __DIR__ . "/../model/doktermodel.php";
+
+// Inisialisasi model dengan koneksi
+$dokterModel = new DokterModel($conn);
+
+// Ambil spesialis unik dari database
+$spesialisList = $dokterModel->getSpesialis();
 ?>
 
 <?php if (isset($_SESSION['login_success'])): ?>
@@ -54,28 +62,28 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <body>
 
-  <?php include __DIR__ . "/Halaman/header.php"; ?>
+<?php include __DIR__ . "/Halaman/header.php"; ?>
 
-  <section class="container py-5 position-relative">
+<!-- ================= HERO ================= -->
+<section class="container py-5 position-relative">
     <div class="row align-items-center g-5">
 
       <div class="col-lg-6">
-          <h1 class="display-3 fw-bold mt-4 text-dark">
+        <h1 class="display-3 fw-bold mt-4 text-dark">
           Advanced Care,<br>
           <span class="blue-primary">Personal Touch</span>
         </h1>
-        
 
         <p class="fs-5 text-secondary mt-3">
-          Nikmati layanan kesehatan yang menggabungkan inovasi medis terdepan dengan perawatan yang penuh empati dan disesuaikan dengan kebutuhan individu.
+          Nikmati layanan kesehatan yang menggabungkan inovasi medis terdepan dengan perawatan yang penuh empati.
         </p>
 
         <div class="d-flex gap-3 mt-4 flex-wrap">
-          <a href="index.php?action=janjitemu" class="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 shadow">
+          <a href="index.php?action=janjitemu" class="btn btn-primary btn-lg px-4 shadow">
             Buat Janji Temu
           </a>
 
-          <a href="emergency_care.html" class="btn btn-daftar btn-lg d-flex align-items-center gap-2 px-4">
+          <a href="emergency_care.html" class="btn btn-daftar btn-lg px-4">
             Penanganan Darurat
           </a>
         </div>
@@ -83,22 +91,21 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="row text-center mt-5 pt-4 border-top">
           <div class="col-4">
             <h3 class="blue-primary fw-bold">50K+</h3>
-            <p class="text-secondary small mb-0">Pasien Terobati</p>
+            <p class="small text-secondary mb-0">Pasien Terobati</p>
           </div>
           <div class="col-4">
             <h3 class="blue-primary fw-bold">200+</h3>
-            <p class="text-secondary small mb-0">Dokter Spesialis</p>
+            <p class="small text-secondary mb-0">Dokter Spesialis</p>
           </div>
           <div class="col-4">
             <h3 class="blue-primary fw-bold">98%</h3>
-            <p class="text-secondary small mb-0">Tingkat Kepuasan</p>
+            <p class="small text-secondary mb-0">Kepuasan Pasien</p>
           </div>
         </div>
       </div>
 
       <!-- Carousel -->
       <div class="col-lg-6 position-relative">
-
         <div class="swiper mySwiper rounded-4 shadow overflow-hidden">
           <div class="swiper-wrapper">
             <div class="swiper-slide">
@@ -109,62 +116,75 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
           </div>
         </div>
-
+      </div>
 
     </div>
-  </section>
+</section>
 
-  <section class="bg-white py-5 shadow-sm">
-    <div class="container">
-      <div class="p-4 p-md-5 rounded-4" style="background: linear-gradient(to right, #eff6ff, #faf5ff);">
-        <div class="row align-items-center g-4"> <!-- Left Text -->
-          <div class="col-lg-6">
-            <h2 class="fw-bold mb-3 display-6"> Jadwalkan Janji Temu Anda Hari Ini </h2>
-            <p class="mb-4 fs-5 text-secondary"> Buat janji dengan dokter spesialis kami dan dapatkan perawatan yang
-              Anda butuhkan. Ketersediaan real-time di semua spesialisasi. </p>
-          </div> <!-- Form -->
-          <div class="col-lg-6">
-            <div class="bg-white rounded-4 shadow p-4">
-              <form>
-                <div class="mb-4"> <label class="form-label">Pilih Spesialis</label> <select class="form-select">
-                    <option>Cardiology</option>
-                    <option>Orthopedics</option>
-                    <option>Neurology</option>
-                    <option>Pediatrics</option>
-                    <option>General Medicine</option>
-                  </select> </div>
-                <div class="mb-4"> <label class="form-label">Tanggal yang Diinginkan</label> <input type="date"
-                    class="form-control" min="2025-11-25"> </div>
-                <div class="mb-4"> <label class="form-label">Slot Waktu</label> <select class="form-select">
-                    <option>Pagi (8:00 AM - 12:00 PM)</option>
-                    <option>Siang (12:00 PM - 4:00 PM)</option>
-                    <option>Malam (4:00 PM - 8:00 PM)</option>
-                  </select> </div>
-                <div> <a href="find_a_doctor.html" class="btn btn-primary w-100 fs-5 py-2"> Temukan Dokter yang Tersedia
-                  </a> </div>
-              </form>
-            </div>
+<!-- ================= FIND DOCTOR ================= -->
+<section class="bg-white py-5 shadow-sm">
+  <div class="container">
+    <div class="p-4 p-md-5 rounded-4" style="background: linear-gradient(to right, #eff6ff, #faf5ff);">
+      <div class="row align-items-center g-4">
+
+        <div class="col-lg-6">
+          <h2 class="fw-bold mb-3 display-6"> Temukan Dokter yang Tersedia </h2>
+          <p class="mb-4 fs-5 text-secondary">Pilih spesialis dan tanggal kedatangan Anda.</p>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="bg-white rounded-4 shadow p-4">
+
+            <form action="index.php" method="GET">
+              <input type="hidden" name="action" value="temukandokter">
+
+              <!-- SPESIALIS -->
+              <div class="mb-4">
+                <label class="form-label">Pilih Spesialis</label>
+                <select name="spesialis" class="form-select" required>
+                  <option value="">-- Pilih Spesialis --</option>
+
+                  <?php while ($s = mysqli_fetch_assoc($spesialisList)) : ?>
+                    <option value="<?= $s['spesialis']; ?>">
+                        <?= $s['spesialis']; ?>
+                    </option>
+                  <?php endwhile; ?>
+
+                </select>
+              </div>
+
+              <!-- TANGGAL -->
+              <div class="mb-4">
+                <label class="form-label">Tanggal Temu</label>
+                <input type="date" name="tanggal" class="form-control" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 fs-5 py-2">
+                Temukan Dokter
+              </button>
+
+            </form>
+
           </div>
         </div>
+
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <?php include __DIR__ . "/Halaman/footer.php"; ?>
+<?php include __DIR__ . "/Halaman/footer.php"; ?>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-  <!-- Bootstrap + Swiper JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-  <script>
-    var swiper = new Swiper(".mySwiper", {
-      loop: true,
-      autoplay: { delay: 3500 },
-      effect: "fade"
-    });
-  </script>
+<script>
+  var swiper = new Swiper(".mySwiper", {
+    loop: true,
+    autoplay: { delay: 3500 },
+    effect: "fade"
+  });
+</script>
 
 </body>
-
 </html>

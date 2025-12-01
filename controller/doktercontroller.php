@@ -1,32 +1,72 @@
 <?php
+
 class DokterController {
 
     private $model;
 
     public function __construct() {
-        include_once "Model/DokterModel.php";
+
+        // ============================
+        // LOAD KONEKSI DATABASE
+        // ============================
+        require_once __DIR__ . "../../koneksi.php";
+
+        // ============================
+        // LOAD MODEL DOKTER
+        // ============================
+        require_once __DIR__ . "/../model/doktermodel.php";
+
+        // gunakan koneksi global
         global $conn;
+
+        // inisialisasi model
         $this->model = new DokterModel($conn);
     }
 
-    public function Index() {
-        $dokter = $this->model->getAll();
-        include "Views/dokter/index.php";
+    // ===============================
+    // 1. LIST DOKTER UNTUK VIEW
+    // ===============================
+    public function Temukan() {
+        $spesialis = $_GET['spesialis'] ?? null;
+
+        if ($spesialis) {
+            $dokter = $this->model->getBySpesialis($spesialis);
+        } else {
+            $dokter = $this->model->getAll();
+        }
+
+        include __DIR__ . "/../View/temukandokter.php";
     }
 
+
+    // ===============================
+    // 2. FORM TAMBAH DOKTER
+    // ===============================
     public function Add() {
-        include "Views/dokter/add.php";
+        include __DIR__ . "/../View/dokter/add.php";
     }
 
+    // ===============================
+    // 3. INSERT DOKTER BARU
+    // ===============================
     public function Store() {
-        $this->model->insert($_POST);
+        if (!empty($_POST)) {
+            $this->model->insert($_POST);
+        }
         header("Location: index.php?action=dokter_list");
+        exit;
     }
 
+    // ===============================
+    // 4. DELETE DOKTER
+    // ===============================
     public function Delete() {
-        $id = $_GET['id'];
-        $this->model->delete($id);
+        if (isset($_GET['id'])) {
+            $this->model->delete($_GET['id']);
+        }
         header("Location: index.php?action=dokter_list");
+        exit;
     }
-
 }
+
+?>
