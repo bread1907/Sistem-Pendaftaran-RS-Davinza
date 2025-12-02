@@ -38,7 +38,7 @@ body {
 
 .card-register {
     width: 90%;
-    max-width: 600px;
+    max-width: 650px;
     /* Lebih lebar untuk form yang lebih banyak field */
     border-radius: 20px;
     /* Lebih melengkung */

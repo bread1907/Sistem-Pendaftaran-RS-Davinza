@@ -34,21 +34,16 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php unset($_SESSION['popup_success']); endif; ?>
 
 
-<?php if (isset($_SESSION['popup_error'])): ?>
-<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.7);">
+<!-- <div class="modal fade show" style="display:block; background:rgba(0,0,0,0.7);">
   <div class="modal-dialog">
     <div class="modal-content p-4">
       <h4 class="text-danger">⚠ Periksa Form Anda</h4>
       <ul>
-        <?php foreach ($_SESSION['popup_error'] as $err): ?>
-            <li><?= $err ?></li>
-        <?php endforeach; ?>
       </ul>
       <button class="btn btn-danger mt-2" onclick="window.location='index.php?action=register'">Tutup</button>
     </div>
   </div>
-</div>
-<?php unset($_SESSION['popup_error']); endif; ?>
+</div> -->
 
 
 <?php if (isset($_SESSION['popup_fail'])): ?>
@@ -73,6 +68,21 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <h2 class="text-center fw-bold mb-3">Daftar Akun Baru</h2>
                 <p class="text-center text-muted mb-4">Isi data Anda dengan lengkap</p>
+
+                <?php
+                    if (isset($_SESSION['register_errors'])) {
+                        foreach ($_SESSION['register_errors'] as $error) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                        unset($_SESSION['register_errors']);
+                    }
+
+                    if (isset($_SESSION['register_errors'])) {
+                        echo "<div class='alert alert-danger'>" . $_SESSION['register_error'] . "</div>";
+                        unset($_SESSION['register_errors']);
+                    }
+                        
+                ?>
 
                 <form action="index.php?action=register" method="POST">
 

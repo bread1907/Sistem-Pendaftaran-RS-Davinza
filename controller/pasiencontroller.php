@@ -34,6 +34,9 @@ class PasienController {
 
         $errors = [];
 
+        if (empty($email) || empty($username) || empty($password) || empty($confirm) || empty($tanggal_lahir) || empty($jenis_kelamin) || empty($alamat) || empty($no_hp) || empty($nik)) {
+            $errors[] = "Semua field harus diisi dengan benar!";
+        }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Email tidak valid!";
         }
@@ -41,14 +44,14 @@ class PasienController {
             $errors[] = "Email sudah terdaftar!";
         }
         if (strlen($password) < 8) {
-            $errors[] = "Password minimal 8 karakter!";
+            $errors[] = "Password harus terdiri dari minimal 8 karakter!";
         }
         if ($password !== $confirm) {
             $errors[] = "Konfirmasi password tidak cocok!";
         }
 
         if (!empty($errors)) {
-            $_SESSION['popup_error'] = $errors;
+            $_SESSION['register_errors'] = $errors;
             header("Location: index.php?action=register");
             exit;
         }
