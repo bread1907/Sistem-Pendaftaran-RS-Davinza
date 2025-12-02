@@ -77,8 +77,9 @@ if (session_status() === PHP_SESSION_NONE) {
                 <form action="index.php?action=register" method="POST">
 
                     <div class="container-fluid">
-                        <div class="row">
+                        <div class="row">    
 
+                            <!-- Email -->
                             <div class="col-md-6 ps-0 mb-3">
                                 <label class="form-label">Email</label>
                                 <div class="input-group">
@@ -87,14 +88,16 @@ if (session_status() === PHP_SESSION_NONE) {
                                 </div>
                             </div>
 
+                            <!-- Nama Lengkap -->
                             <div class="col-md-6 p-0 mb-3">
-                                <label class="form-label">Username</label>
+                                <label class="form-label">Nama Lengkap</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
                                     <input type="text" name="username" class="form-control shadow-none" required>
                                 </div>
                             </div>
-                                                        <!-- NIK -->
+
+                            <!-- NIK -->
                             <div class="col-md-6 ps-0 mb-3">
                                 <label class="form-label">NIK</label>
                                 <div class="input-group">
@@ -103,30 +106,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                 </div>
                             </div>
 
-                            <div class="col-md-6 ps-0 mb-3">
-                                <label class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" name="password" class="form-control shadow-none" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 p-0 mb-3">
-                                <label class="form-label">Konfirmasi Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" name="confirm_password" class="form-control shadow-none" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 ps-0 mb-3">
-                                <label class="form-label">Tanggal Lahir</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                    <input type="date" name="tanggal_lahir" class="form-control shadow-none" required>
-                                </div>
-                            </div>
-
+                            <!-- Tanggal Lahir -->
                             <div class="col-md-6 p-0 mb-3">
                                 <label class="form-label">Nomor HP</label>
                                 <div class="input-group">
@@ -135,7 +115,17 @@ if (session_status() === PHP_SESSION_NONE) {
                                 </div>
                             </div>
 
-                            <div class="col-md-12 p-0 mb-3">
+                            <!-- Tanggal Lahir -->
+                            <div class="col-md-6 ps-0 mb-3">
+                                <label class="form-label">Tanggal Lahir</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                    <input type="date" name="tanggal_lahir" class="form-control shadow-none" required>
+                                </div>
+                            </div>
+
+                            <!-- Jenis Kelamin -->
+                            <div class="col-md-6 p-0 mb-3">
                                 <label class="form-label">Jenis Kelamin</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
@@ -147,11 +137,30 @@ if (session_status() === PHP_SESSION_NONE) {
                                 </div>
                             </div>
 
+                            <!-- Alamat -->
                             <div class="col-md-12 p-0 mb-3">
                                 <label class="form-label">Alamat</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-map"></i></span>
                                     <textarea name="alamat" class="form-control shadow-none" required></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-md-6 ps-0 mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="password" class="form-control shadow-none" required>
+                                </div>
+                            </div>
+
+                            <!-- Konfirmasi Password -->
+                            <div class="col-md-6 ps-0 mb-3">
+                                <label class="form-label">Konfirmasi Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="confirm_password" class="form-control shadow-none" required>
                                 </div>
                             </div>
 

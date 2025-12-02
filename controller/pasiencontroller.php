@@ -25,6 +25,7 @@ class PasienController {
         $username = trim($_POST['username']);
         $password = $_POST['password'];
         $confirm  = $_POST['confirm_password'];
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $tanggal_lahir = $_POST['tanggal_lahir'];
         $jenis_kelamin = $_POST['jenis_kelamin'];
         $alamat = trim($_POST['alamat']);
