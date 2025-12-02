@@ -23,7 +23,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <?php if (isset($_SESSION['popup_success'])): ?>
 <div class="modal fade show" style="display:block; background:rgba(0,0,0,0.7);">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-center p-4">
       <h4 class="text-success mb-3">✔ Berhasil!</h4>
       <p><?= $_SESSION['popup_success']; ?></p>
@@ -32,19 +32,6 @@ if (session_status() === PHP_SESSION_NONE) {
   </div>
 </div>
 <?php unset($_SESSION['popup_success']); endif; ?>
-
-
-<!-- <div class="modal fade show" style="display:block; background:rgba(0,0,0,0.7);">
-  <div class="modal-dialog">
-    <div class="modal-content p-4">
-      <h4 class="text-danger">⚠ Periksa Form Anda</h4>
-      <ul>
-      </ul>
-      <button class="btn btn-danger mt-2" onclick="window.location='index.php?action=register'">Tutup</button>
-    </div>
-  </div>
-</div> -->
-
 
 <?php if (isset($_SESSION['popup_fail'])): ?>
 <script>alert("Registrasi gagal, silakan coba lagi.");</script>

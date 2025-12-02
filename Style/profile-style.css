@@ -1,0 +1,18 @@
+.text-primary {
+    color: #0077C0 !important;
+}
+
+body {
+    position: relative;
+    background: #F3F4F6;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(1, 97, 156, 0.15), transparent);
+}

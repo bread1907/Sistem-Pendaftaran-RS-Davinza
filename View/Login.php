@@ -1,19 +1,13 @@
 <?php
-// =============================
-// SESSION
-// =============================
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// =============================
-// KONEKSI DATABASE
-// =============================
+
 include __DIR__ . "/../koneksi.php"; // pastikan path benar
 
-// =============================
-// PROSES LOGIN
-// =============================
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
@@ -63,37 +57,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="Style/login-style.css">
+<style>
+  .modal {
+    position: fixed !important;
+    z-index: 3000 !important;
+  }
+
+  .modal-backdrop {
+      position: fixed !important;
+      z-index: 2990 !important;
+  }
+</style>
 </head>
 <body>
+<!-- Header -->
+<?php include __DIR__ . "/Halaman/header.php"; ?>
 
-<!-- POPUP LOGIN ERROR -->
-<?php if (!empty($_SESSION['login_error'])): ?>
-<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.5);">
-  <div class="modal-dialog">
-    <div class="modal-content p-4 text-center">
-      <h4 class="text-danger">Login Gagal!</h4>
-      <p><?= htmlspecialchars($_SESSION['login_error']); ?></p>
-      <button class="btn btn-primary mt-2" onclick="window.location='index.php?action=login'">Kembali</button>
-    </div>
-  </div>
-</div>
-<?php unset($_SESSION['login_error']); endif; ?>
 
 <!-- POPUP LOGIN SUCCESS -->
 <?php if (!empty($_SESSION['login_success'])): ?>
-<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.5);">
-  <div class="modal-dialog">
+<div class="modal fade show" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content p-4 text-center">
       <h4 class="text-success">✔ Login Berhasil!</h4>
       <p><?= $_SESSION['login_success']; ?></p>
-      <button class="btn btn-primary mt-2" onclick="window.location='index.php?action=homepage'">Lanjut</button>
+      <a href="index.php?action=homepage" class="btn btn-primary mt-2">Lanjut</a>
     </div>
   </div>
 </div>
 <?php unset($_SESSION['login_success']); endif; ?>
 
-<!-- Header -->
-<?php include __DIR__ . "/Halaman/header.php"; ?>
+
 
 <div class="main-content">
   <div class="row g-0 h-100 w-100">
@@ -109,6 +103,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <h2 class="text-center fw-bold mb-3">Selamat Datang Kembali!</h2>
         <p class="text-center text-muted mb-4">Silakan login dengan kredensial yang benar</p>
+
+        <?php
+          if (isset($_SESSION['login_error'])) {
+            echo "<div class='alert alert-danger'>" . $_SESSION['login_error'] . "</div>";
+              unset($_SESSION['login_error']);
+          }
+        ?>
 
         <form action="index.php?action=login" method="POST">
           <div class="mb-3">

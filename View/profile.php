@@ -1,5 +1,7 @@
 <?php include __DIR__ . "/Halaman/header.php"; ?>
 
+<link rel="stylesheet" href="Style/profile-style.css">
+
 <div class="container my-5">
     <h2 class="mb-4 text-primary fw-bold">Profil Saya</h2>
 
@@ -33,9 +35,9 @@
             </div>
             <hr class="my-4 border-light">
             <div class="row">
-                <div class="col-md-6"><p><strong>Tanggal Lahir:</strong> <?= htmlspecialchars($user['tanggal_lahir']); ?></p></div>
-                <div class="col-md-6"><p><strong>Jenis Kelamin:</strong> <?= htmlspecialchars($user['jenis_kelamin']); ?></p></div>
-                <div class="col-12"><p><strong>Alamat:</strong> <?= htmlspecialchars($user['alamat']); ?></p></div>
+                <div class="col-12"><p><strong>Tanggal Lahir:</strong> <?= htmlspecialchars($user['tanggal_lahir']); ?></p></div>
+                <div class="col-12"><p><strong>Jenis Kelamin:</strong> <?= htmlspecialchars($user['jenis_kelamin']); ?></p></div>
+                <div class="col-md-6"><p><strong>Alamat:</strong> <?= htmlspecialchars($user['alamat']); ?></p></div>
             </div>
         </div>
     </div>
