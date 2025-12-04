@@ -4,14 +4,14 @@ class AdminController {
     private $model;
 
     public function __construct() {
-        include_once "Model/AdminModel.php";
+        include_once "../model/AdminModel.php";
         global $conn;
         $this->model = new AdminModel($conn);
     }
 
     // halaman login admin
     public function LoginPage() {
-        include "Views/admin/login.php";
+        include "../Admin/AdminLogin.php";
     }
 
     public function Login() {

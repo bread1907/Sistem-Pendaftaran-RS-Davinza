@@ -1,0 +1,41 @@
+:root{
+    --blue: #0077C0;
+    --blue_hover: #04629c;
+}
+
+*{
+    font-family: 'Lato', sans-serif;
+}
+
+.h-font{
+    font-family: 'stack-sans-headline', cursive;
+}
+
+input::-webkit-outer-spin-button
+input::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number]{
+    -moz-appearance: textfield;   
+}
+
+.btn.custom-bg{
+    background-color: var(--blue) !important;
+    border: 1px solid var(--blue) !important;
+    color: white !important;
+}
+
+.btn.custom-bg:hover{
+    background-color: var(--blue_hover) !important;
+    border: 1px solid var(--blue_hover) !important;
+    color: white !important;
+}
+
+
+.h-line{
+    width: 150px;
+    margin: 0 auto;
+    height: 1.7px;
+}
