@@ -43,6 +43,26 @@ switch($action){
     case 'temukandokter':
         $doktercontroller->Temukan();
         break;
+    case 'HomepageDokter':
+        require_once "Controller/doktercontroller.php";
+        $controller = new DokterController();
+        $controller->HomepageDokter();
+        break;
+    // case 'login_dokter':
+    //     // membuka halaman login dokter
+    //     require "View/Halaman/login_dokter.php";
+    //     break;
+
+    // case 'login_dokter_proses':
+    //     // memproses login dokter
+    //     require "Controller/LoginDokterController.php";
+    //     break;
+
+    // case 'homepage_dokter':
+    //     // halaman dashboard dokter
+    //     $doktercontroller->HomepageDokter();
+    //     break;
+
     default:
         $pasiencontroller->Homepage();
         break;
