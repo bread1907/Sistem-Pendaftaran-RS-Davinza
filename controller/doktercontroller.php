@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 class DokterController {
 
@@ -14,13 +15,13 @@ class DokterController {
     // ======================================
     public function login() {
 
-        // Jika sudah login → redirect ke homepage
+        // Jika sudah login → langsung ke homepage dokter
         if (isset($_SESSION['dokter_id'])) {
             header("Location: index.php?page=home");
             exit;
         }
 
-        include "View/LoginDokter.php";
+        include __DIR__ . "/../Dokter/Halaman/logindokter.php";
     }
 
     // ======================================
@@ -50,12 +51,13 @@ class DokterController {
     // ======================================
     public function home() {
 
+        // Cek login
         if (!isset($_SESSION['dokter_id'])) {
             header("Location: index.php?page=login");
             exit;
         }
 
-        include "View/HomepageDokter.php";
+        include __DIR__ . "/../Dokter/Halaman/homepagedokter.php";
     }
 
     // ======================================
@@ -66,20 +68,4 @@ class DokterController {
         header("Location: index.php?page=login");
         exit;
     }
-
-    // ===============================
-// 5. HOMEPAGE DOKTER
-// ===============================
-public function HomepageDokter() {
-
-    // Jika belum login sebagai dokter → kembali ke halaman login dokter
-    if (!isset($_SESSION['dokter_id'])) {
-        include __DIR__ . "Dokter/Halaman/homepagedokter.php";
-        return;
-    }
-
-    // Jika sudah login → tampilkan dashboard dokter
-    include __DIR__ . "Dokter/Halaman/homepagedokter.php";
-}
-
 }
