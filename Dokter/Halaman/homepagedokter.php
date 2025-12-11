@@ -1,9 +1,12 @@
 <?php
-// session_start(); <-- jangan panggil di sini karena sudah di index.php
+// session_start(); <-- jangan panggil di sini
+
 if (!isset($_SESSION['dokter_logged_in']) || $_SESSION['dokter_logged_in'] !== true) {
     header("Location: logindokter.php");
     exit;
 }
+
+$current = 'home';   // <<< TAMBAHKAN INI
 
 require_once __DIR__ . "/template/header_dokter.php";
 ?>

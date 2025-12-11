@@ -27,11 +27,11 @@ class DokterController {
                 $_SESSION['dokter_nama'] = $dokter['nama'];
                 $_SESSION['dokter_spesialis'] = $dokter['spesialis'];
 
-                header("Location: ../Halaman/homepagedokter.php");
+                header("Location: /Sistem-Pendaftaran-RS-Davinza/Dokter/Halaman/homepagedokter.php");
                 exit;
             } else {
                 $_SESSION['error'] = "Username, NIP, atau password salah!";
-                header("Location: ../Halaman/logindokter.php");
+                header("Location: /Sistem-Pendaftaran-RS-Davinza/Dokter/Halaman/logindokter.php");
                 exit;
             }
         }
@@ -39,7 +39,7 @@ class DokterController {
 
     public function home() {
         if (!isset($_SESSION['dokter_logged_in']) || $_SESSION['dokter_logged_in'] !== true) {
-            header("Location: ../Halaman/logindokter.php");
+            header("Location: /Sistem-Pendaftaran-RS-Davinza/Dokter/Halaman/logindokter.php");
             exit;
         }
         include __DIR__ . "/../Halaman/homepagedokter.php";

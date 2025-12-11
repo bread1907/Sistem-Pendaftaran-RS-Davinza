@@ -25,7 +25,8 @@ require_once __DIR__ . "/template/header_dokter.php";
         <?php unset($_SESSION['error']); ?>
     <?php endif; ?>
 
-    <form action="../controller/controllerdokter.php?aksi=loginProses" method="POST" class="card p-4 shadow-sm">
+    <form action="../index.php?aksi=loginProses" method="POST" class="card p-4 shadow-sm">
+
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" name="username" id="username" class="form-control" required>

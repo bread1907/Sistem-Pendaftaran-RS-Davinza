@@ -1,13 +1,18 @@
 <?php
-session_start(); // Hanya di sini
+session_start();
 
-// Load koneksi database
-include "../koneksi.php"; 
-
-// Load controller
+include "../koneksi.php";
 include "controller/controllerdokter.php";
 
 $doktercontroller = new DokterController($conn);
+
+// ROUTER
+if (isset($_GET['aksi'])) {
+    if ($_GET['aksi'] === 'loginProses') {
+        $doktercontroller->loginProses();
+        exit;
+    }
+}
 
 // Jika sudah login, tampilkan homepage, jika belum tampilkan login
 if (isset($_SESSION['dokter_logged_in']) && $_SESSION['dokter_logged_in'] === true) {
@@ -15,4 +20,5 @@ if (isset($_SESSION['dokter_logged_in']) && $_SESSION['dokter_logged_in'] === tr
 } else {
     $doktercontroller->LoginDokter();
 }
+
 ?>
