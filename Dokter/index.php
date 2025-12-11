@@ -1,6 +1,6 @@
 <?php
 // Mengimpor file controller dan koneksi
-include "../controller/doktercontroller.php";
+include "controller/controllerdokter.php";
 include "../koneksi.php"; // Pastikan ini adalah file yang mengatur koneksi ke database
 
 // Membuat objek koneksi ke database
