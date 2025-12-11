@@ -16,7 +16,7 @@ class DokterController {
     // ======================================
     public function login() {
         if (isset($_SESSION['dokter_id'])) {
-            header("Location: index.php?page=home");
+            header("Location: index.php?action=HomepageDokter");
             exit;
         }
         include __DIR__ . "/../Dokter/Halaman/logindokter.php";
@@ -66,6 +66,7 @@ class DokterController {
         exit;
     }
 
+<<<<<<< HEAD
     // ======================================
     // 5. DAFTAR PASIEN SESUAI JADWAL
     // ======================================
@@ -107,5 +108,11 @@ class DokterController {
 
         $pasienData = $this->model->getPasienById($pasien_id);
         include __DIR__ . "/../Dokter/Halaman/input_diagnosa.php";
+=======
+    public function LoginDokter() {
+        session_destroy();
+        header("Location: index.php?action=login");
+        exit;
+>>>>>>> e3ad27f97ce167a6bf87a6987b40308059177284
     }
 }
