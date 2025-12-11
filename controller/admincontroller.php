@@ -24,6 +24,7 @@ class AdminController{
         if (isset($_POST['login'])) {
             $username = $_POST['admin_name'];
             $password = $_POST['admin_pass'];
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             $result = $this->model->login($username, $password);
             //var_dump($result); die(); // CEK APA YANG DIKEMBALIKAN

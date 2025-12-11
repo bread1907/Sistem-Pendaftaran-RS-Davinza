@@ -7,6 +7,8 @@
 
     <?php include __DIR__ . "/Halaman_Admin/links.php"; ?>
     <link rel="stylesheet" href="Style_Admin/main.css">
+
+    <?php require 'Halaman_Admin/header_admin.php' ?>
 </head>
 <body class="bg-light">
     
