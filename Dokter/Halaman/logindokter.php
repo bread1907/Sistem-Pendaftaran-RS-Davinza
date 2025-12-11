@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // Jika sudah login, langsung arahkan ke homepage dokter
 if (isset($_SESSION['dokter_logged_in']) && $_SESSION['dokter_logged_in'] === true) {

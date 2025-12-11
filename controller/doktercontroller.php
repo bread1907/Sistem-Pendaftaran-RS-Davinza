@@ -17,7 +17,7 @@ class DokterController {
 
         // Jika sudah login → langsung ke homepage dokter
         if (isset($_SESSION['dokter_id'])) {
-            header("Location: index.php?page=home");
+            header("Location: index.php?action=HomepageDokter");
             exit;
         }
 
@@ -66,6 +66,12 @@ class DokterController {
     public function logout() {
         session_destroy();
         header("Location: index.php?page=login");
+        exit;
+    }
+
+    public function LoginDokter() {
+        session_destroy();
+        header("Location: index.php?action=login");
         exit;
     }
 }
