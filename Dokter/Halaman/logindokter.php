@@ -1,56 +1,52 @@
 <?php
 session_start();
 
-// Jika sudah login, langsung arahkan ke homepage dokter
+// Logout handler
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: logindokter.php");
+    exit;
+}
+
+// Jika sudah login, arahkan ke dashboard
 if (isset($_SESSION['dokter_logged_in']) && $_SESSION['dokter_logged_in'] === true) {
     header("Location: homepagedokter.php");
     exit;
 }
 
-// Load header
+// Load header template
 require_once __DIR__ . "/template/header_dokter.php";
 ?>
 
-<div class="container" style="max-width: 460px; margin-top: 80px;">
+<div class="container" style="max-width: 450px; margin-top: 80px;">
+    <h2 class="text-center mb-4">Login Dokter</h2>
 
-    <h2 style="text-align: center; margin-bottom: 25px;">Login Dokter</h2>
-
-    <?php if (isset($_GET['error'])): ?>
-        <div style="
-            padding: 10px;
-            background: #ffdddd;
-            border-left: 5px solid #d9534f;
-            margin-bottom: 20px;
-        ">
-            <?php echo htmlspecialchars($_GET['error']); ?>
-        </div>
+    <!-- Error handling -->
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); ?></div>
+        <?php unset($_SESSION['error']); ?>
     <?php endif; ?>
 
-    <form action="../../controller/doktercontroller.php?aksi=login" method="POST"
-          style="background: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-
-        <div style="margin-bottom: 15px;">
-            <label for="email">Email Dokter</label>
-            <input type="email" id="email" name="email" required
-                   style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+    <form action="../../controller/doktercontroller.php?aksi=loginProses" method="POST" class="card p-4 shadow-sm">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" id="username" class="form-control" required>
         </div>
 
-        <div style="margin-bottom: 20px;">
-            <label for="password">Kata Sandi</label>
-            <input type="password" id="password" name="password" required
-                   style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+        <div class="mb-3">
+            <label for="nip" class="form-label">NIP</label>
+            <input type="text" name="nip" id="nip" class="form-control" required>
         </div>
 
-        <button type="submit" 
-                style="width: 100%; padding: 10px; border: none; background: #0275d8; 
-                       color: white; border-radius: 6px; cursor: pointer;">
-            Masuk
-        </button>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
 
+        <button type="submit" class="btn btn-primary w-100">Masuk</button>
     </form>
 </div>
 
 <?php
-// Load footer
 require_once __DIR__ . "/template/footer_dokter.php";
 ?>
