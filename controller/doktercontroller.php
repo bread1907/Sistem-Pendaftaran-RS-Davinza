@@ -1,118 +1,72 @@
 <?php
-session_start();
 
 class DokterController {
 
     private $model;
 
-    public function __construct($conn) {
-        // Load model dokter
-        require_once __DIR__ . "/../model/DokterModel.php";
+    public function __construct() {
+
+        // ============================
+        // LOAD KONEKSI DATABASE
+        // ============================
+        require_once __DIR__ . "../../koneksi.php";
+
+        // ============================
+        // LOAD MODEL DOKTER
+        // ============================
+        require_once __DIR__ . "/../model/doktermodel.php";
+
+        // gunakan koneksi global
+        global $conn;
+
+        // inisialisasi model
         $this->model = new DokterModel($conn);
     }
 
-    // ======================================
-    // 1. TAMPILKAN HALAMAN LOGIN DOKTER
-    // ======================================
-    public function login() {
-        if (isset($_SESSION['dokter_id'])) {
-            header("Location: index.php?action=HomepageDokter");
-            exit;
-        }
-        include __DIR__ . "/../Dokter/Halaman/logindokter.php";
-    }
+    // ===============================
+    // 1. LIST DOKTER UNTUK VIEW
+    // ===============================
+    public function Temukan() {
+        $spesialis = $_GET['spesialis'] ?? null;
 
-    // ======================================
-    // 2. PROSES LOGIN DOKTER
-    // ======================================
-    public function loginProses() {
-        $username = $_POST['username'] ?? '';
-        $nip = $_POST['nip'] ?? '';
-        $password = $_POST['password'] ?? '';
-
-        $dokter = $this->model->login($username, $nip, $password);
-
-        if ($dokter) {
-            $_SESSION['dokter_id'] = $dokter['dokter_id'];
-            $_SESSION['dokter_nama'] = $dokter['nama'];
-            $_SESSION['dokter_nip'] = $dokter['nip'];
-
-            header("Location: index.php?page=home");
-            exit;
+        if ($spesialis) {
+            $dokter = $this->model->getBySpesialis($spesialis);
         } else {
-            $_SESSION['error'] = "Username, NIP, atau password salah!";
-            header("Location: index.php?page=login");
-            exit;
+            $dokter = $this->model->getAll();
         }
+
+        include __DIR__ . "/../View/temukandokter.php";
     }
 
-    // ======================================
-    // 3. HALAMAN HOMEPAGE DOKTER (DASHBOARD)
-    // ======================================
-    public function home() {
-        if (!isset($_SESSION['dokter_id'])) {
-            header("Location: index.php?page=login");
-            exit;
-        }
-        include __DIR__ . "/../Dokter/Halaman/homepagedokter.php";
+
+    // ===============================
+    // 2. FORM TAMBAH DOKTER
+    // ===============================
+    public function Add() {
+        include __DIR__ . "/../View/dokter/add.php";
     }
 
-    // ======================================
-    // 4. LOGOUT DOKTER
-    // ======================================
-    public function logout() {
-        session_destroy();
-        header("Location: index.php?page=login");
+    // ===============================
+    // 3. INSERT DOKTER BARU
+    // ===============================
+    public function Store() {
+        if (!empty($_POST)) {
+            $this->model->insert($_POST);
+        }
+        header("Location: index.php?action=dokter_list");
         exit;
     }
 
-<<<<<<< HEAD
-    // ======================================
-    // 5. DAFTAR PASIEN SESUAI JADWAL
-    // ======================================
-    public function daftarPasien($tanggal = null) {
-        if (!isset($_SESSION['dokter_id'])) {
-            header("Location: index.php?page=login");
-            exit;
+    // ===============================
+    // 4. DELETE DOKTER
+    // ===============================
+    public function Delete() {
+        if (isset($_GET['id'])) {
+            $this->model->delete($_GET['id']);
         }
-
-        $tanggal = $tanggal ?? date('Y-m-d'); 
-        $dokter_id = $_SESSION['dokter_id'];
-        $pasien = $this->model->getPasienByJadwal($dokter_id, $tanggal);
-
-        include __DIR__ . "/../Dokter/Halaman/daftarpasien.php";
-    }
-
-    // ======================================
-    // 6. INPUT DIAGNOSA / RESEP / TINDAKAN
-    // ======================================
-    public function inputDiagnosa($pasien_id = null) {
-        if (!isset($_SESSION['dokter_id'])) {
-            header("Location: index.php?page=login");
-            exit;
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $diagnosa = $_POST['diagnosa'] ?? '';
-            $resep = $_POST['resep'] ?? '';
-            $tindakan = $_POST['tindakan'] ?? '';
-            $saran = $_POST['saran'] ?? '';
-            $pasien_id = $_POST['pasien_id'] ?? 0;
-
-            $this->model->simpanDiagnosa($pasien_id, $_SESSION['dokter_id'], $diagnosa, $resep, $tindakan, $saran);
-
-            $_SESSION['success'] = "Data diagnosa berhasil disimpan.";
-            header("Location: index.php?page=daftar_pasien");
-            exit;
-        }
-
-        $pasienData = $this->model->getPasienById($pasien_id);
-        include __DIR__ . "/../Dokter/Halaman/input_diagnosa.php";
-=======
-    public function LoginDokter() {
-        session_destroy();
-        header("Location: index.php?action=login");
+        header("Location: index.php?action=dokter_list");
         exit;
->>>>>>> e3ad27f97ce167a6bf87a6987b40308059177284
     }
 }
+
+?>
