@@ -70,8 +70,6 @@ class DokterController {
     }
 
     public function LoginDokter() {
-        session_destroy();
-        header("Location: index.php?action=login");
-        exit;
+        include "../Dokter/Halaman/logindokter.php";
     }
 }

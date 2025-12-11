@@ -13,7 +13,7 @@ $action = $_GET['action'] ?? 'login';
 // Memilih aksi yang sesuai berdasarkan parameter 'action'
 switch ($action) {
     case 'login':
-        $doktercontroller->login(); // Memanggil metode login
+        $doktercontroller->LoginDokter(); // Memanggil metode login
         break;
     case 'HomepageDokter':
         $doktercontroller->home(); // Memanggil metode home untuk halaman utama dokter
