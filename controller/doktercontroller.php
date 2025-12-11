@@ -66,4 +66,20 @@ class DokterController {
         header("Location: index.php?page=login");
         exit;
     }
+
+    // ===============================
+// 5. HOMEPAGE DOKTER
+// ===============================
+public function HomepageDokter() {
+
+    // Jika belum login sebagai dokter → kembali ke halaman login dokter
+    if (!isset($_SESSION['dokter_id'])) {
+        include __DIR__ . "Dokter/Halaman/homepagedokter.php";
+        return;
+    }
+
+    // Jika sudah login → tampilkan dashboard dokter
+    include __DIR__ . "Dokter/Halaman/homepagedokter.php";
+}
+
 }
