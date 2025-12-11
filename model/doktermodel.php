@@ -3,51 +3,34 @@
 class DokterModel {
 
     private $conn;
+    private $table = "dokter";
 
-    public function __construct($db) {
+    public function __construct($conn) {
+        $this->conn = $conn;
+    }
 
-        if (!$db) {
-            die("❌ Database connection is null (DB tidak terkoneksi)");
+    // ======================================
+    // CEK LOGIN DOKTER
+    // ======================================
+    public function login($username, $password) {
+
+        $sql = "SELECT * FROM $this->table WHERE username = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $username);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+
+            $data = $result->fetch_assoc();
+
+            // password_hash
+            if (password_verify($password, $data['password'])) {
+                return $data;
+            }
         }
 
-        $this->conn = $db;
+        return false;
     }
-
-    // Ambil semua dokter
-    public function getAll() {
-        $sql = "SELECT * FROM dokter ORDER BY nama ASC";
-        return mysqli_query($this->conn, $sql);
-    }
-
-    // Tambah dokter
-    public function insert($data) {
-        $nama = mysqli_real_escape_string($this->conn, $data['nama_dokter']);
-        $spesialis = mysqli_real_escape_string($this->conn, $data['spesialis']);
-        $no_hp = mysqli_real_escape_string($this->conn, $data['no_hp']);
-
-        $query = "INSERT INTO dokter (nama_dokter, spesialis, no_hp)
-                  VALUES ('$nama', '$spesialis', '$no_hp')";
-
-        return mysqli_query($this->conn, $query);
-    }
-
-    // Hapus dokter
-    public function delete($id) {
-        $id = mysqli_real_escape_string($this->conn, $id);
-        $query = "DELETE FROM dokter WHERE dokter_id = '$id'";
-        return mysqli_query($this->conn, $query);
-    }
-    public function getSpesialis() {
-        $sql = "SELECT DISTINCT spesialis FROM dokter ORDER BY spesialis ASC";
-        return mysqli_query($this->conn, $sql);
-    }
-    // Ambil dokter berdasarkan spesialis
-    public function getBySpesialis($spesialis) {
-        $spesialis = mysqli_real_escape_string($this->conn, $spesialis);
-        $sql = "SELECT * FROM dokter WHERE spesialis = '$spesialis' ORDER BY nama ASC";
-        return mysqli_query($this->conn, $sql);
-    }
-
 }
-
-?>
