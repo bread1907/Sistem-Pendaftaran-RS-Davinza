@@ -4,7 +4,7 @@ include "koneksi.php";
 
 include "controller/pasiencontroller.php";
 include "controller/jadwalcontroller.php";
-include "controller/doktercontroller.php";
+
 
 $pasiencontroller = new PasienController();
 $doktercontroller = new DokterController();
@@ -43,11 +43,7 @@ switch($action){
     case 'temukandokter':
         $doktercontroller->Temukan();
         break;
-    case 'HomepageDokter':
-        require_once "Controller/doktercontroller.php";
-        $controller = new DokterController();
-        $controller->HomepageDokter();
-        break;
+    
     // case 'login_dokter':
     //     // membuka halaman login dokter
     //     require "View/Halaman/login_dokter.php";
