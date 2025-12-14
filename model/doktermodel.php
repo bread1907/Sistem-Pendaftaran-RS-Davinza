@@ -3,70 +3,51 @@
 class DokterModel {
 
     private $conn;
-    private $table = "dokter";
 
-    public function __construct($conn) {
-        $this->conn = $conn;
-    }
+    public function __construct($db) {
 
-    // ======================================
-    // CEK LOGIN DOKTER (username + nip + password)
-    // ======================================
-    public function login($username, $nip, $password) {
-
-        $sql = "SELECT * FROM $this->table WHERE username = ? AND nip = ? LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $username, $nip);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows == 1) {
-            $data = $result->fetch_assoc();
-
-            // Verifikasi password hash
-            if (password_verify($password, $data['password'])) {
-                return $data; // login sukses, kembalikan data dokter
-            }
+        if (!$db) {
+            die("❌ Database connection is null (DB tidak terkoneksi)");
         }
 
-        return false; // login gagal
+        $this->conn = $db;
     }
 
-    // ======================================
-    // Ambil pasien sesuai jadwal dokter
-    // ======================================
-    public function getPasienByJadwal($dokter_id, $tanggal) {
-        $sql = "SELECT p.*, j.tanggal_jadwal 
-                FROM pasien p
-                INNER JOIN jadwal j ON p.pasien_id = j.pasien_id
-                WHERE j.dokter_id = ? AND j.tanggal_jadwal = ?
-                ORDER BY j.tanggal_jadwal ASC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("is", $dokter_id, $tanggal);
-        $stmt->execute();
-        return $stmt->get_result();
+    // Ambil semua dokter
+    public function getAll() {
+        $sql = "SELECT * FROM dokter ORDER BY nama ASC";
+        return mysqli_query($this->conn, $sql);
     }
 
-    // ======================================
-    // Ambil data pasien by ID
-    // ======================================
-    public function getPasienById($pasien_id) {
-        $sql = "SELECT * FROM pasien WHERE pasien_id = ? LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $pasien_id);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
+    // Tambah dokter
+    public function insert($data) {
+        $nama = mysqli_real_escape_string($this->conn, $data['nama_dokter']);
+        $spesialis = mysqli_real_escape_string($this->conn, $data['spesialis']);
+        $no_hp = mysqli_real_escape_string($this->conn, $data['no_hp']);
+
+        $query = "INSERT INTO dokter (nama_dokter, spesialis, no_hp)
+                  VALUES ('$nama', '$spesialis', '$no_hp')";
+
+        return mysqli_query($this->conn, $query);
     }
 
-    // ======================================
-    // Simpan diagnosa/resep/tindakan/saran
-    // ======================================
-    public function simpanDiagnosa($pasien_id, $dokter_id, $diagnosa, $resep, $tindakan, $saran) {
-        $sql = "INSERT INTO rekam_medis 
-                (pasien_id, dokter_id, diagnosa, resep, tindakan, saran, tanggal) 
-                VALUES (?, ?, ?, ?, ?, ?, NOW())";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iissss", $pasien_id, $dokter_id, $diagnosa, $resep, $tindakan, $saran);
-        return $stmt->execute();
+    // Hapus dokter
+    public function delete($id) {
+        $id = mysqli_real_escape_string($this->conn, $id);
+        $query = "DELETE FROM dokter WHERE dokter_id = '$id'";
+        return mysqli_query($this->conn, $query);
     }
+    public function getSpesialis() {
+        $sql = "SELECT DISTINCT spesialis FROM dokter ORDER BY spesialis ASC";
+        return mysqli_query($this->conn, $sql);
+    }
+    // Ambil dokter berdasarkan spesialis
+    public function getBySpesialis($spesialis) {
+        $spesialis = mysqli_real_escape_string($this->conn, $spesialis);
+        $sql = "SELECT * FROM dokter WHERE spesialis = '$spesialis' ORDER BY nama ASC";
+        return mysqli_query($this->conn, $sql);
+    }
+
 }
+
+?>
