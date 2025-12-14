@@ -1,8 +1,4 @@
 <?php
-if (!isset($_SESSION['dokter_login'])) {
-    header("Location: ../index.php");
-    exit;
-}
 include __DIR__ . "/template/header_dokter.php";
 ?>
 

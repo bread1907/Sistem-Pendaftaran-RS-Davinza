@@ -7,6 +7,17 @@ class DokterModel {
         $this->conn = $conn;
     }
 
+    public function getByUsernameNip($username, $nip) {
+        $sql = "SELECT * FROM dokter WHERE username=? AND nip=? LIMIT 1";
+        $stmt = mysqli_prepare($this->conn, $sql);
+
+        mysqli_stmt_bind_param($stmt, "ss", $username, $nip);
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    }
+
+
     public function cekLogin($username, $nip, $password) {
         $sql = "SELECT * FROM dokter WHERE TRIM(username)=? AND TRIM(nip)=? LIMIT 1";
         $stmt = mysqli_prepare($this->conn, $sql);
