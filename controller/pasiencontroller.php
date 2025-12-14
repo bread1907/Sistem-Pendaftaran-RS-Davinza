@@ -149,5 +149,8 @@ public function Logout() {
     public function Fasilitas(){
         include "View/fasilitas.php";
     }
+        public function Emergency(){
+        include "View/emergencycall.php";
+    }
 
 }

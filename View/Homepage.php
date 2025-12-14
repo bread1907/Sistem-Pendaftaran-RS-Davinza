@@ -83,7 +83,7 @@ $spesialisList = $dokterModel->getSpesialis();
             Buat Janji Temu
           </a>
 
-          <a href="emergency_care.html" class="btn btn-daftar btn-lg px-4">
+          <a href="index.php?action=emergency" class="btn btn-daftar btn-lg px-4">
             Penanganan Darurat
           </a>
         </div>
