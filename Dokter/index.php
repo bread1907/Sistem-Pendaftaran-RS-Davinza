@@ -17,4 +17,7 @@ switch($aksi){
     case 'login':
         $controller->login();
         break;
+    case 'logout':
+        $controller->logout();
+        break;
 }?>
