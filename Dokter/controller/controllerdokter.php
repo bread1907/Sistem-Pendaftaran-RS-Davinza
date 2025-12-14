@@ -9,40 +9,23 @@ class DokterController {
         $this->model = new DokterModel($conn);
     }
 
-    public function LoginDokter() {
-        include __DIR__ . "/../Halaman/logindokter.php";
-    }
-
     public function loginProses() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $username = $_POST['username'] ?? '';
-            $nip = $_POST['nip'] ?? '';
-            $password = $_POST['password'] ?? '';
+        $username = trim($_POST['username'] ?? '');
+        $nip      = trim($_POST['nip'] ?? '');
+        $password = trim($_POST['password'] ?? '');
 
-            $dokter = $this->model->cekLogin($username, $nip, $password);
+        $dokter = $this->model->cekLogin($username, $nip, $password);
 
-            if ($dokter) {
-                $_SESSION['dokter_logged_in'] = true;
-                $_SESSION['dokter_id'] = $dokter['dokter_id'];
-                $_SESSION['dokter_nama'] = $dokter['nama'];
-                $_SESSION['dokter_spesialis'] = $dokter['spesialis'];
-
-                header("Location: /Sistem-Pendaftaran-RS-Davinza/Dokter/Halaman/homepagedokter.php");
-                exit;
-            } else {
-                $_SESSION['error'] = "Username, NIP, atau password salah!";
-                header("Location: /Sistem-Pendaftaran-RS-Davinza/Dokter/Halaman/logindokter.php");
-                exit;
-            }
-        }
-    }
-
-    public function home() {
-        if (!isset($_SESSION['dokter_logged_in']) || $_SESSION['dokter_logged_in'] !== true) {
-            header("Location: /Sistem-Pendaftaran-RS-Davinza/Dokter/Halaman/logindokter.php");
+        if ($dokter) {
+            $_SESSION['dokter_login'] = true;
+            $_SESSION['dokter_id']    = $dokter['dokter_id'];
+            $_SESSION['dokter_nama']  = $dokter['nama'];
+            header("Location: Halaman/homepagedokter.php");
             exit;
         }
-        include __DIR__ . "/../Halaman/homepagedokter.php";
+
+        $_SESSION['error'] = "Username, NIP, atau Password salah!";
+        header("Location: index.php");
+        exit;
     }
 }
-?>

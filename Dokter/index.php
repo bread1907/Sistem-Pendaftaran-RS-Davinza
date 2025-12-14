@@ -1,24 +1,26 @@
 <?php
 session_start();
+require_once "../koneksi.php";
+require_once "controller/controllerdokter.php";
 
-include "../koneksi.php";
-include "controller/controllerdokter.php";
+$controller = new DokterController($conn);
 
-$doktercontroller = new DokterController($conn);
+$aksi = $_GET['aksi'] ?? '';
 
-// ROUTER
-if (isset($_GET['aksi'])) {
-    if ($_GET['aksi'] === 'loginProses') {
-        $doktercontroller->loginProses();
-        exit;
-    }
+if ($aksi === 'loginProses') {
+    $controller->loginProses();
+    exit;
+} elseif ($aksi === 'logout') {
+    session_destroy();
+    header("Location: index.php");
+    exit;
 }
 
-// Jika sudah login, tampilkan homepage, jika belum tampilkan login
-if (isset($_SESSION['dokter_logged_in']) && $_SESSION['dokter_logged_in'] === true) {
-    $doktercontroller->home();
-} else {
-    $doktercontroller->LoginDokter();
+// Jika sudah login, redirect ke homepage
+if (isset($_SESSION['dokter_login']) && $_SESSION['dokter_login'] === true) {
+    header("Location: Halaman/homepagedokter.php");
+    exit;
 }
 
-?>
+// Tampilkan halaman login
+include "Halaman/logindokter.php";

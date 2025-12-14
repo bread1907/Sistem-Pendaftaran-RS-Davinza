@@ -46,5 +46,4 @@ switch($action){
     default:
         $pasiencontroller->Homepage();
         break;
-}
-?>
+}?>
