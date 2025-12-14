@@ -3,19 +3,23 @@ class AdminModel {
 
     private $conn;
 
-    public function __construct($db) {
-        $this->conn = $db;
+    public function __construct($conn) {
+        $this->conn = $conn;
     }
 
     public function login($username, $password) {
-        $query = "SELECT * FROM admin WHERE username='$username'";
-        $result = mysqli_query($this->conn, $query);
+        $stmt = $this->conn->prepare("SELECT * FROM admin WHERE username = ? AND password = ?");
+        $stmt->bind_param("ss", $username, $password);
+        $stmt->execute();
 
-        if ($row = mysqli_fetch_assoc($result)) {
-            if (password_verify($password, $row['password'])) {
-                return $row;
-            }
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            return $result->fetch_assoc();
         }
+
         return false;
     }
 }
+
+?>
