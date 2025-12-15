@@ -32,4 +32,10 @@ class JadwalModel {
 
         return mysqli_stmt_get_result($stmt);
     }
+        public function updateStatusJadwal($jadwal_id, $status) {
+        $sql = "UPDATE jadwal_temu SET status = ? WHERE jadwal_id = ?";
+        $stmt = mysqli_prepare($this->conn, $sql);
+        mysqli_stmt_bind_param($stmt, "si", $status, $jadwal_id);
+        return mysqli_stmt_execute($stmt);
+    }
 }

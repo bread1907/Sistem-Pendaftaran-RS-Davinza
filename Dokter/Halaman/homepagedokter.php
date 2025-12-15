@@ -45,41 +45,66 @@ $hari = [
     'Saturday'  => 'Sabtu'
 ];
 
-// Cek apakah hari ini adalah hari praktek
+// =====================
+// CEK HARI & JAM PRAKTEK
+// =====================
 $hari_ini = $hari[date('l')];
 $hari_praktek = explode(', ', $dokter['hari_praktek']);
-$is_praktek_hari_ini = in_array($hari_ini, $hari_praktek);
 
-// Statistik berdasarkan tabel jadwal_temu (jumlah pasien hari ini dan bulan ini)
-$statistik = ['pasien_hari_ini' => 0, 'pasien_bulan_ini' => 0];
-$query_statistik_hari = "SELECT COUNT(*) AS pasien_hari_ini FROM jadwal_temu WHERE DATE(tanggal_temu) = CURDATE() AND dokter_id = ? AND status IN ('Pending', 'Confirmed')"; // Filter status aktif
-$query_statistik_bulan = "SELECT COUNT(*) AS pasien_bulan_ini FROM jadwal_temu WHERE MONTH(tanggal_temu) = MONTH(CURDATE()) AND YEAR(tanggal_temu) = YEAR(CURDATE()) AND dokter_id = ? AND status IN ('Pending', 'Confirmed')"; // Filter status aktif
+// Jam sekarang
+$jam_sekarang = date('H:i');
+
+// Jam praktek dari database
+$jam_mulai   = $dokter['jam_mulai'];
+$jam_selesai = $dokter['jam_selesai'];
+
+// Cek hari cocok
+$is_hari_praktek = in_array($hari_ini, $hari_praktek);
+
+// Cek jam cocok
+$is_jam_praktek = ($jam_sekarang >= $jam_mulai && $jam_sekarang <= $jam_selesai);
+
+// Status praktek final
+$is_praktek_hari_ini = ($is_hari_praktek && $is_jam_praktek);
+
+
+$statistik = [
+    'pasien_hari_ini' => 0,
+    'pasien_bulan_ini' => 0
+];
+
+// PASIEN HARI INI (HANYA PENDING)
+$query_statistik_hari = "
+    SELECT COUNT(*) AS pasien_hari_ini
+    FROM jadwal_temu
+    WHERE DATE(tanggal_temu) = CURDATE()
+      AND dokter_id = ?
+      AND status = 'pending'
+";
+
+// PASIEN BULAN INI (SEMUA STATUS)
+$query_statistik_bulan = "
+    SELECT COUNT(*) AS pasien_bulan_ini
+    FROM jadwal_temu
+    WHERE MONTH(tanggal_temu) = MONTH(CURDATE())
+      AND YEAR(tanggal_temu) = YEAR(CURDATE())
+      AND dokter_id = ?
+";
 
 // Query hari ini
 $stmt_hari = $conn->prepare($query_statistik_hari);
-if ($stmt_hari) {
-    $stmt_hari->bind_param("i", $dokter_id);
-    if ($stmt_hari->execute()) {
-        $result_hari = $stmt_hari->get_result();
-        $statistik['pasien_hari_ini'] = $result_hari->fetch_assoc()['pasien_hari_ini'];
-    }
-    $stmt_hari->close();
-} else {
-    error_log("Query hari ini gagal: " . $conn->error);
-}
+$stmt_hari->bind_param("i", $dokter_id);
+$stmt_hari->execute();
+$statistik['pasien_hari_ini'] = $stmt_hari->get_result()->fetch_assoc()['pasien_hari_ini'];
+$stmt_hari->close();
 
 // Query bulan ini
 $stmt_bulan = $conn->prepare($query_statistik_bulan);
-if ($stmt_bulan) {
-    $stmt_bulan->bind_param("i", $dokter_id);
-    if ($stmt_bulan->execute()) {
-        $result_bulan = $stmt_bulan->get_result();
-        $statistik['pasien_bulan_ini'] = $result_bulan->fetch_assoc()['pasien_bulan_ini'];
-    }
-    $stmt_bulan->close();
-} else {
-    error_log("Query bulan ini gagal: " . $conn->error);
-}
+$stmt_bulan->bind_param("i", $dokter_id);
+$stmt_bulan->execute();
+$statistik['pasien_bulan_ini'] = $stmt_bulan->get_result()->fetch_assoc()['pasien_bulan_ini'];
+$stmt_bulan->close();
+
 
 include __DIR__ . "/template/header_dokter.php";
 ?>
