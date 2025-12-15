@@ -28,6 +28,13 @@ switch ($aksi) {
     case 'logout':
         $controller->logout();
         break;
+    case 'formrekammedis':
+        $controller->formRekamMedis();
+        break;
+
+    case 'simpanrekammedis':
+        $controller->simpanRekamMedis();
+        break;
 
     default:
         $controller->login();
