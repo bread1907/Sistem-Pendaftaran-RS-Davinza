@@ -1,19 +1,28 @@
 <?php
 require_once __DIR__ . "/../model/modeldokter.php";
+require_once __DIR__ . "/../model/jadwalmodel.php";
 
 class DokterController {
 
     private $model;
+    private $conn; // ✅ tambahan
 
     public function __construct($conn) {
+        $this->conn = $conn; // ✅ tambahan
         $this->model = new DokterModel($conn);
     }
 
     public function login() {
+        if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
         include 'Halaman/logindokter.php';
     }
 
     public function LoginProses() {
+         if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             include 'Halaman/logindokter.php';
@@ -60,8 +69,81 @@ class DokterController {
     }
 
     public function homepage() {
-        include 'Halaman/homepagedokter.php';
+
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+
+    if (empty($_SESSION['dokter_login'])) {
+        header("Location: index.php?aksi=login");
+        exit;
+    }
+
+    include 'Halaman/homepagedokter.php';
+}
+
+
+    // ✅ tambahan method untuk dokter melihat daftar pasien sesuai jadwal temu
+    public function daftarPasien() {
+
+        // Pastikan session aktif
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Cek apakah dokter sudah login
+        if (empty($_SESSION['dokter_login']) || empty($_SESSION['dokter_id'])) {
+            header("Location: index.php?aksi=login");
+            exit;
+        }
+
+        // Ambil data daftar pasien berdasarkan jadwal temu dokter
+        $jadwalModel = new JadwalModel($this->conn);
+        $data = $jadwalModel->getPasienByDokter((int) $_SESSION['dokter_id']);
+
+        // Tampilkan halaman daftar pasien dokter
+        include 'Halaman/halaman_daftar_pasien.php';
+    }
+    public function formRekamMedis() {
+
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        if (empty($_SESSION['dokter_login'])) {
+        header("Location: index.php?aksi=login");
+        exit;
+    }
+
+    $dokter_id = $_GET['dokter_id'] ?? null;
+    $pasien_id = $_GET['pasien_id'] ?? null;
+
+    include 'Halaman/form_rekam_medis.php';
+    }
+    public function simpanRekamMedis() {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (empty($_SESSION['dokter_login']) || empty($_SESSION['dokter_id'])) {
+        header("Location: index.php?aksi=login");
+        exit;
+    }
+
+    require_once __DIR__ . '/../model/rekammedismodel.php';
+    $model = new RekamMedisModel($this->conn);
+
+    $dokter_id = (int) $_SESSION['dokter_id'];      // ✅ dari session
+    $pasien_id = (int) ($_POST['pasien_id'] ?? 0);  // ✅ dari form
+
+    $diagnosa   = trim($_POST['diagnosa'] ?? '');
+    $tindakan   = trim($_POST['tindakan'] ?? '');
+    $resep_obat = trim($_POST['resep_obat'] ?? '');
+    $catatan    = trim($_POST['catatan'] ?? '');
+
+    $model->insertRekamMedis($dokter_id, $pasien_id, $diagnosa, $tindakan, $resep_obat, $catatan);
+
+    header("Location: index.php?aksi=daftarpasiendokter");
+    exit;
+}
+
+
     public function logout() {
 
         // Pastikan session aktif
