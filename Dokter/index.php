@@ -36,6 +36,10 @@ switch ($aksi) {
         $controller->simpanRekamMedis();
         break;
 
+    case 'riwayatrekammedis':
+        $controller->riwayatRekamMedis();
+        break;
+
     default:
         $controller->login();
         break;
