@@ -1,19 +1,28 @@
 <?php
 require_once __DIR__ . "/../model/modeldokter.php";
+require_once __DIR__ . "/../model/jadwalmodel.php";
 
 class DokterController {
 
     private $model;
+    private $conn; // ✅ tambahan
 
     public function __construct($conn) {
+        $this->conn = $conn; // ✅ tambahan
         $this->model = new DokterModel($conn);
     }
 
     public function login() {
+        if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
         include 'Halaman/logindokter.php';
     }
 
     public function LoginProses() {
+         if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             include 'Halaman/logindokter.php';
@@ -60,8 +69,42 @@ class DokterController {
     }
 
     public function homepage() {
-        include 'Halaman/homepagedokter.php';
+
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+
+    if (empty($_SESSION['dokter_login'])) {
+        header("Location: index.php?aksi=login");
+        exit;
+    }
+
+    include 'Halaman/homepagedokter.php';
+}
+
+
+    // ✅ tambahan method untuk dokter melihat daftar pasien sesuai jadwal temu
+    public function daftarPasien() {
+
+        // Pastikan session aktif
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Cek apakah dokter sudah login
+        if (empty($_SESSION['dokter_login']) || empty($_SESSION['dokter_id'])) {
+            header("Location: index.php?aksi=login");
+            exit;
+        }
+
+        // Ambil data daftar pasien berdasarkan jadwal temu dokter
+        $jadwalModel = new JadwalModel($this->conn);
+        $data = $jadwalModel->getPasienByDokter((int) $_SESSION['dokter_id']);
+
+        // Tampilkan halaman daftar pasien dokter
+        include 'Halaman/halaman_daftar_pasien.php';
+    }
+
     public function logout() {
 
         // Pastikan session aktif
