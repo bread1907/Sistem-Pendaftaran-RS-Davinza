@@ -159,7 +159,7 @@ include __DIR__ . "/template/header_dokter.php";
 
     <!-- MENU TAMBAHAN -->
     <div class="row g-4 mb-4">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body">
                     <h5 class="fw-bold mb-2 text-success">
@@ -171,19 +171,6 @@ include __DIR__ . "/template/header_dokter.php";
                     <a href="index.php?aksi=riwayatrekammedis" class="btn btn-outline-success">
                         <i class="bi bi-eye"></i> Lihat Rekam Medis
                     </a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h5 class="fw-bold mb-2 text-primary">
-                        <i class="bi bi-person-badge"></i> Profil Dokter
-                    </h5>
-                    <p class="text-muted mb-3">
-                        Kelola informasi akun, data pribadi, dan pengaturan profil Anda.
-                    </p>
-                    <span class="badge bg-secondary">Coming Soon</span>
                 </div>
             </div>
         </div>
