@@ -14,6 +14,18 @@
         case 'dashboard':
             $admincontroller->Dashboard();
             break;
+        case 'logout':
+            $admincontroller->Logout();
+            break;
+        case 'lihat_dokter':
+            $admincontroller->LihatDokter();
+            break;
+        case 'lihat_pasien':
+            $admincontroller->LihatPasien();
+            break;
+        case 'pengaturan':
+            $admincontroller->Pengaturan();
+            break;
         default:
             $admincontroller->LoginPage();
             break;

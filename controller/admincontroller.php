@@ -1,16 +1,19 @@
 <?php
-class AdminController{
+class AdminController
+{
 
     private $model;
 
-    public function __construct(){
+    public function __construct()
+    {
         include_once "../model/AdminModel.php";
         global $conn;
         $this->model = new AdminModel($conn);
     }
 
     // halaman login admin
-    public function LoginPage(){
+    public function LoginPage()
+    {
         if (isset($_SESSION['admin_username'])) {
             header("Location: index.php?action=dashboard");
             exit;
@@ -19,38 +22,46 @@ class AdminController{
         include "../Admin/AdminLogin.php";
     }
 
-
-    public function Login(){
+    public function Login()
+    {
         if (isset($_POST['login'])) {
             $username = $_POST['admin_name'];
             $password = $_POST['admin_pass'];
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             $result = $this->model->login($username, $password);
-            //var_dump($result); die(); // CEK APA YANG DIKEMBALIKAN
 
             if ($result) {
-                // set session                
-                $_SESSION['admin_username'] = $result['username'];
+                session_regenerate_id(true);
 
-                // redirect to dashboard
+                $_SESSION['admin_username'] = $result['username'];
+                $_SESSION['admin_login'] = true;
+
                 header("Location: index.php?action=dashboard");
                 exit;
             } else {
-                $msg = "Gagal! Username atau password salah!";
-                $_SESSION['login_error'] = $msg;
+                $_SESSION['login_error'] = "Gagal! Username atau password salah!";
                 header("Location: index.php?action=admin_login");
                 exit;
             }
         }
+
         include "../Admin/AdminLogin.php";
     }
 
-    public function Dashboard(){
+
+    public function Dashboard()
+    {
         include "../Admin/Dashboard.php";
     }
 
-    public function Logout(){
+    public function Pengaturan()
+    {
+        include "../Admin/Pengaturan.php";
+    }
+
+    public function Logout()
+    {
+        session_start();
         session_destroy();
         header("Location: index.php");
     }

@@ -1,32 +1,58 @@
-:root{
+:root {
     --blue: #0077C0;
     --blue_hover: #04629c;
 }
 
-*{
+* {
     font-family: 'Lato', sans-serif;
 }
 
-.h-font{
+.h-font {
     font-family: 'stack-sans-headline', cursive;
 }
 
-.btn.custom-bg{
+body {
+    height: 100%;
+}
+
+.btn.custom-bg {
     background-color: var(--blue) !important;
     border: 1px solid var(--blue) !important;
     color: white !important;
 }
 
-.btn.custom-bg:hover{
+.btn.custom-bg:hover {
     background-color: var(--blue_hover) !important;
     border: 1px solid var(--blue_hover) !important;
     color: white !important;
 }
 
-.h-line{
+.h-line {
     width: 150px;
     margin: 0 auto;
     height: 1.7px;
 }
 
+#sidepanel {
+    position: sticky;
+    top: 56px; /* tinggi header */
+    height: calc(100vh - 56px);
+}
 
+
+@media screen and (max-width: 992px) {
+    #sidepanel {
+        position: sticky;
+        top: 56px;
+        /* tinggi header */
+        height: calc(100vh - 56px);
+    }
+
+
+    #main-content {
+        margin-top: 0;
+        /* Hapus margin, karena sidebar sekarang collapse */
+        padding-top: 20px;
+        /* Tambah padding untuk ruang */
+    }
+}

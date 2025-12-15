@@ -21,7 +21,7 @@
         align-items: center;
         gap: 30px;
         margin-bottom: 40px;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     }
 
     .hero img {
@@ -50,13 +50,13 @@
         border-radius: 18px;
         padding: 30px 25px;
         text-align: center;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
     }
 
     .card img {
@@ -98,8 +98,8 @@
         color: #666;
     }
 
-    @media(max-width: 768px){
-        .hero{
+    @media(max-width: 768px) {
+        .hero {
             flex-direction: column;
             text-align: center;
         }
@@ -109,7 +109,6 @@
 <div class="emergency-container">
 
     <div class="hero">
-        <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" alt="Emergency">
         <div class="hero-text">
             <h1>Kontak Darurat Rumah Sakit</h1>
             <p>Pelayanan medis cepat, aman, dan profesional selama 24 jam</p>
@@ -118,28 +117,36 @@
 
     <div class="card-grid">
         <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="IGD">
+            <div class="align-items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="IGD">
+            </div>
             <h3>IGD 24 Jam</h3>
             <p>Penanganan pasien gawat darurat setiap saat.</p>
             <a href="tel:119">Hubungi 119</a>
         </div>
 
         <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/2967/2967357.png" alt="Ambulans">
+            <div class="align-items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/2967/2967357.png" alt="Ambulans">
+            </div>
             <h3>Ambulans</h3>
             <p>Layanan ambulans cepat dan siaga.</p>
             <a href="tel:0211234567">021-123-4567</a>
         </div>
 
         <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" alt="Call Center">
+            <div class="align-items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" alt="Call Center">
+            </div>
             <h3>Call Center</h3>
             <p>Informasi dokter & layanan rumah sakit.</p>
             <a href="tel:0217654321">021-765-4321</a>
         </div>
 
         <div class="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png" alt="Covid">
+            <div class="align-items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/4320/4320337.png" alt="Covid">
+            </div>
             <h3>Unit Isolasi</h3>
             <p>Penanganan penyakit menular & isolasi.</p>
             <a href="tel:1199">119 ext. 9</a>
