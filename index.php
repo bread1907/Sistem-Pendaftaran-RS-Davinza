@@ -40,6 +40,9 @@ switch($action){
     case 'fasilitas':
         $pasiencontroller->Fasilitas();
         break;
+    case 'emergency':
+        $pasiencontroller->Emergency();
+        break;
     case 'temukandokter':
         $doktercontroller->Temukan();
         break;
