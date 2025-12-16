@@ -51,7 +51,51 @@ class AdminController
 
     public function Dashboard()
     {
+        // Fetch dashboard statistics
+        $totalPatients = $this->model->getTotalPatients();
+        $totalDoctors = $this->model->getTotalDoctors();
+        $appointmentsToday = $this->model->getAppointmentsToday();
+        $completedToday = $this->model->getCompletedAppointmentsToday();
+        $roomOccupancy = $this->model->getRoomOccupancy();
+        $departmentStats = $this->model->getDepartmentStats();
+
+        // Pass data to view
+        $data = [
+            'totalPatients' => $totalPatients,
+            'totalDoctors' => $totalDoctors,
+            'appointmentsToday' => $appointmentsToday,
+            'completedToday' => $completedToday,
+            'roomOccupancy' => $roomOccupancy,
+            'departmentStats' => $departmentStats
+        ];
+
+        extract($data);
         include "../Admin/Dashboard.php";
+    }
+
+    public function Dokter()
+    {
+        // Fetch doctor statistics
+        $totalDoctors = $this->model->getTotalDoctors();
+        $totalSpecializations = $this->model->getTotalSpecializations();
+        $averagePatientsPerDay = $this->model->getAveragePatientsPerDay();
+
+        // Fetch all doctors
+        include_once "../model/DokterModel.php";
+        global $conn;
+        $dokterModel = new DokterModel($conn);
+        $doctors = $dokterModel->getAll();
+
+        // Pass data to view
+        $data = [
+            'totalDoctors' => $totalDoctors,
+            'totalSpecializations' => $totalSpecializations,
+            'averagePatientsPerDay' => $averagePatientsPerDay,
+            'doctors' => $doctors
+        ];
+
+        extract($data);
+        include "../Admin/Dokter.php";
     }
 
     public function Pengaturan()

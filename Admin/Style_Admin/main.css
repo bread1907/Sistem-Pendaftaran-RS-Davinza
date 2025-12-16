@@ -21,6 +21,8 @@ body {
     color: white !important;
 }
 
+
+
 .btn.custom-bg:hover {
     background-color: var(--blue_hover) !important;
     border: 1px solid var(--blue_hover) !important;

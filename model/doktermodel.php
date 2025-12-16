@@ -24,9 +24,10 @@ class DokterModel {
         $nama = mysqli_real_escape_string($this->conn, $data['nama_dokter']);
         $spesialis = mysqli_real_escape_string($this->conn, $data['spesialis']);
         $no_hp = mysqli_real_escape_string($this->conn, $data['no_hp']);
+        $hari_praktek = mysqli_real_escape_string($this->conn, $data['hari_praktek'] ?? '');
 
-        $query = "INSERT INTO dokter (nama_dokter, spesialis, no_hp)
-                  VALUES ('$nama', '$spesialis', '$no_hp')";
+        $query = "INSERT INTO dokter (nama_dokter, spesialis, no_hp, hari_praktek)
+                  VALUES ('$nama', '$spesialis', '$no_hp', '$hari_praktek')";
 
         return mysqli_query($this->conn, $query);
     }
