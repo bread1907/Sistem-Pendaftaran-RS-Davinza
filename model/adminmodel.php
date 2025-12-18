@@ -7,9 +7,9 @@ class AdminModel {
         $this->conn = $conn;
     }
 
-    public function login($username, $password) {
-        $stmt = $this->conn->prepare("SELECT * FROM admin WHERE username = ? AND password = ?");
-        $stmt->bind_param("ss", $username, $password);
+    public function login($username) {
+        $stmt = $this->conn->prepare("SELECT * FROM admin WHERE username = ?");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
 
         $result = $stmt->get_result();
@@ -57,9 +57,9 @@ class AdminModel {
         return $result['total'];
     }
 
-    // Calculate room occupancy (assuming 68 total rooms, occupied based on today's appointments)
+    // Calculate room occupancy (assuming 67 total rooms, occupied based on today's appointments)
     public function getRoomOccupancy() {
-        $totalRooms = 68;
+        $totalRooms = 67;
         $occupied = $this->getAppointmentsToday();
         $percentage = round(($occupied / $totalRooms) * 100);
         return [
@@ -70,36 +70,36 @@ class AdminModel {
     }
 
     // Get department popularity based on appointment counts for specific departments
-    public function getDepartmentStats() {
-        $departments = ['Umum', 'Anak', 'Jantung'];
-        $stats = [];
-        $totalAppointments = 0;
+    // public function getDepartmentStats() {
+    //     $departments = ['Umum', 'Anak', 'Jantung'];
+    //     $stats = [];
+    //     $totalAppointments = 0;
 
-        // First, get total appointments for percentage calculation
-        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM jadwal_temu");
-        $stmt->execute();
-        $totalResult = $stmt->get_result()->fetch_assoc();
-        $totalAppointments = $totalResult['total'];
+    //     // First, get total appointments for percentage calculation
+    //     $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM jadwal_temu");
+    //     $stmt->execute();
+    //     $totalResult = $stmt->get_result()->fetch_assoc();
+    //     $totalAppointments = $totalResult['total'];
 
-        foreach ($departments as $dept) {
-            $stmt = $this->conn->prepare("
-                SELECT COUNT(jt.jadwal_id) as count
-                FROM dokter d
-                LEFT JOIN jadwal_temu jt ON d.dokter_id = jt.dokter_id
-                WHERE d.spesialis = ?
-            ");
-            $stmt->bind_param("s", $dept);
-            $stmt->execute();
-            $result = $stmt->get_result()->fetch_assoc();
-            $count = $result['count'];
-            $percentage = $totalAppointments > 0 ? round(($count / $totalAppointments) * 100) : 0;
-            $stats[] = [
-                'name' => $dept,
-                'percentage' => $percentage
-            ];
-        }
-        return $stats;
-    }
+    //     foreach ($departments as $dept) {
+    //         $stmt = $this->conn->prepare("
+    //             SELECT COUNT(jt.jadwal_id) as count
+    //             FROM dokter d
+    //             LEFT JOIN jadwal_temu jt ON d.dokter_id = jt.dokter_id
+    //             WHERE d.spesialis = ?
+    //         ");
+    //         $stmt->bind_param("s", $dept);
+    //         $stmt->execute();
+    //         $result = $stmt->get_result()->fetch_assoc();
+    //         $count = $result['count'];
+    //         $percentage = $totalAppointments > 0 ? round(($count / $totalAppointments) * 100) : 0;
+    //         $stats[] = [
+    //             'name' => $dept,
+    //             'percentage' => $percentage
+    //         ];
+    //     }
+    //     return $stats;
+    // }
 
     // Get total specializations
     public function getTotalSpecializations() {

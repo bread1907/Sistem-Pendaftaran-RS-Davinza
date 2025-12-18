@@ -22,19 +22,22 @@ class AdminController
         include "../Admin/AdminLogin.php";
     }
 
-    public function Login()
-    {
+    public function Login() {
+        //session_start();
+
         if (isset($_POST['login'])) {
             $username = $_POST['admin_name'];
             $password = $_POST['admin_pass'];
 
-            $result = $this->model->login($username, $password);
+            $admin = $this->model->login($username);
 
-            if ($result) {
-                session_regenerate_id(true);
+            if ($admin && password_verify($password, $admin['password'])) {
 
-                $_SESSION['admin_username'] = $result['username'];
-                $_SESSION['admin_login'] = true;
+                session_regenerate_id(true); // AMAN
+
+                $_SESSION['admin_login']    = true;
+                $_SESSION['admin_id']       = $admin['admin_id'];
+                $_SESSION['admin_username'] = $admin['username'];
 
                 header("Location: index.php?action=dashboard");
                 exit;
@@ -47,6 +50,7 @@ class AdminController
 
         include "../Admin/AdminLogin.php";
     }
+
 
 
     public function Dashboard()
@@ -109,4 +113,5 @@ class AdminController
         session_destroy();
         header("Location: index.php");
     }
+
 }
