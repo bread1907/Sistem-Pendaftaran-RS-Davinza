@@ -94,20 +94,58 @@ $pdf->MultiCell(0,7,': '.$data['alamat']);
 
 $pdf->Ln(6);
 
-/* ===== PARAGRAF DIAGNOSA ===== */
+/* ===== PARAGRAF UTAMA ===== */
 $pdf->MultiCell(0,7,
     "Pada tanggal ".date('d F Y', strtotime($data['waktu_input'])).
-    " telah dilakukan pemeriksaan terhadap pasien tersebut dan dinyatakan benar "
-    ."pasien dalam keadaan sakit dengan diagnosa:\n\n"
-    .$data['diagnosa'].".\n\n"
-    ."Keluhan: ".$data['keluhan'].".\n"
+    " telah dilakukan pemeriksaan kesehatan terhadap pasien yang bersangkutan. "
+    ."Berdasarkan hasil pemeriksaan tersebut, pasien dinyatakan dalam kondisi sakit "
+    ."dan memerlukan penanganan medis lebih lanjut."
 );
 
+$pdf->Ln(5);
+
+/* ===== DETAIL MEDIS ===== */
+$pdf->SetFont('Arial','B',11);
+$pdf->Cell(0,7,'HASIL PEMERIKSAAN MEDIS',0,1);
+$pdf->Ln(2);
+
+$pdf->SetFont('Arial','B',11);
+$pdf->Cell(40,7,'Diagnosa',0,0);
+$pdf->SetFont('Arial','',11);
+$pdf->MultiCell(0,7,': '.$data['diagnosa']);
+
+$pdf->SetFont('Arial','B',11);
+$pdf->Cell(40,7,'Keluhan',0,0);
+$pdf->SetFont('Arial','',11);
+$pdf->MultiCell(0,7,': '.$data['keluhan']);
+
+$pdf->SetFont('Arial','B',11);
+$pdf->Cell(40,7,'Tindakan',0,0);
+$pdf->SetFont('Arial','',11);
+$pdf->MultiCell(0,7,': '.$data['tindakan']);
+
+$pdf->SetFont('Arial','B',11);
+$pdf->Cell(40,7,'Resep Obat',0,0);
+$pdf->SetFont('Arial','',11);
+$pdf->MultiCell(0,7,': '.$data['resep_obat']);
+
+$pdf->SetFont('Arial','B',11);
+$pdf->Cell(40,7,'Catatan Dokter',0,0);
+$pdf->SetFont('Arial','',11);
+$pdf->MultiCell(0,7,': '.$data['catatan']);
+
+$pdf->Ln(10);
+
+/* ===== PENUTUP ===== */
+$pdf->MultiCell(0,7,
+    "Demikian surat keterangan diagnosa ini dibuat dengan sebenar-benarnya "
+    ."untuk dapat dipergunakan sebagaimana mestinya."
+);
 
 $pdf->Ln(15);
 
 /* ===== TTD ===== */
-$pdf->Cell(0,7,'Surabaya, '.date('d F Y'),0,1,'R');
+$pdf->Cell(0,7,'Pekanbaru, '.date('d F Y'),0,1,'R');
 $pdf->Ln(2);
 
 $pdf->Image(__DIR__.'../Pictures/ttd.jpg',140,$pdf->GetY(),40);
