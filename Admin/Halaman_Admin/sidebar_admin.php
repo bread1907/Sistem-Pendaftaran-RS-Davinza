@@ -9,16 +9,16 @@
             <div class="collapse navbar-collapse flex-column align-items-stretch mt-2" id="adminDropdown">
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?dashboard">Dashboard</a>
+                        <a class="nav-link" href="index.php?action=dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?lihat_dokter">Dokter</a>
+                        <a class="nav-link" href="index.php?action=lihat_dokter">Dokter</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?lihat_pasien">Pasien</a>
+                        <a class="nav-link" href="index.php?action=lihat_pasien">Pasien</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?pengaturan">Pengaturan</a>
+                        <a class="nav-link" href="index.php?action=pengaturan">Pengaturan</a>
                     </li>
                 </ul>
             </div>

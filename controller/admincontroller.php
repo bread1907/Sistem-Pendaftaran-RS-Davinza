@@ -5,9 +5,9 @@ class AdminController
     private $model;
     private $dokterModel;
 
-    public function __construct()
-    {
+    public function __construct(){
         include_once "../model/AdminModel.php";
+        include_once "../model/DokterModel.php";  // <-- TAMBAH BARIS INI
         global $conn;
         $this->model = new AdminModel($conn);
         $this->dokterModel = new DokterModel($conn);
@@ -17,7 +17,7 @@ class AdminController
     public function LoginPage()
     {
         if (isset($_SESSION['admin_username'])) {
-            header("Location: index.php?action=dashboard");
+            header("Location: ../Admin/index.php?action=dashboard");
             exit;
         }
 
@@ -41,15 +41,15 @@ class AdminController
                 $_SESSION['admin_id']       = $admin['admin_id'];
                 $_SESSION['admin_username'] = $admin['username'];
 
-                header("Location: index.php?action=dashboard");
+
+                header("Location: ../Admin/index.php?action=dashboard");
                 exit;
             } else {
                 $_SESSION['login_error'] = "Gagal! Username atau password salah!";
-                header("Location: index.php?action=admin_login");
+                header("Location: ../Admin/index.php?action=admin_login");
                 exit;
             }
         }
-
         include "../Admin/AdminLogin.php";
     }
 
@@ -77,9 +77,21 @@ class AdminController
     }
 
     public function LihatDokter() {
-        $doctors = $this->dokterModel->getAllWithStatus();
+        // data statistik
+        $totalDoctors         = $this->model->getTotalDoctors();
+        $totalSpecializations = $this->model->getTotalSpecializations();
+        $averagePatientsPerDay = $this->model->getAveragePatientsPerDay();
+
+        $spesialis = $_GET['spesialis'] ?? '';
+        $hari      = $_GET['hari']      ?? '';
+
+        // pakai 1 sumber data saja
+        $dokterList    = $this->dokterModel->getFiltered($spesialis, $hari);
+        $listSpesialis = $this->dokterModel->getSpesialis();
+
         include "../Admin/Dokter.php";
     }
+
 
     // AJAX — detail dokter (eye & pencil)
     public function getDokter() {
@@ -90,13 +102,70 @@ class AdminController
     }
 
     public function updateDokter() {
-        $this->dokterModel->updateById($_POST);
-        header("Location: index.php?action=lihat_dokter");
+        $data = $_POST;
+
+        // handle upload foto (boleh kosong artinya tidak ganti foto)
+        $fotoFileName = $this->handleUploadFotoUpdate($data['dokter_id'] ?? null);
+
+        if ($fotoFileName !== null) {
+            $data['foto'] = $fotoFileName;
+        } else {
+            // kalau tidak upload baru, ambil foto lama dari DB supaya tidak di-null-kan
+            $dokterLama = $this->dokterModel->getById($data['dokter_id']);
+            $data['foto'] = $dokterLama['foto'] ?? null;
+        }
+
+        $this->dokterModel->updateById($data);
+
+        header("Location: ../Admin/index.php?action=lihat_dokter");
+        exit;
+    }
+
+    // khusus update foto
+    private function handleUploadFotoUpdate($dokterId) {
+        if (empty($_FILES['foto']['name'])) {
+            return null; // tidak ada file baru
+        }
+
+        $fileTmp  = $_FILES['foto']['tmp_name'];
+        $fileName = $_FILES['foto']['name'];
+        $ext      = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        $allowedExt  = ['png', 'jpg', 'jpeg'];
+        $allowedMime = ['image/png', 'image/jpeg'];
+
+        $mime = mime_content_type($fileTmp);
+
+        if (!in_array($ext, $allowedExt) || !in_array($mime, $allowedMime) || getimagesize($fileTmp) === false) {
+            echo "<script>
+                    alert('Tipe file foto tidak valid. Hanya PNG, JPG, JPEG.');
+                    window.history.back();
+                </script>";
+            exit;
+        }
+
+        // nama file bisa pakai dokter_id biar konsisten
+        $newName   = ($dokterId ? 'dokter_' . $dokterId : uniqid('dokter_')) . '.' . $ext;
+        $targetDir = '../Pictures/Dokter/';
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
+
+        if (!move_uploaded_file($fileTmp, $targetDir . $newName)) {
+            echo "<script>
+                    alert('Gagal menyimpan file di server.');
+                    window.history.back();
+                </script>";
+            exit;
+        }
+
+        return $newName;
     }
 
     public function deleteDokter() {
         $this->dokterModel->deleteById($_GET['id']);
-        header("Location: index.php?action=lihat_dokter");
+        header("Location: ../Admin/index.php?action=lihat_dokter");
+        exit;
     }
 
     public function StatusDokter() {
@@ -105,34 +174,85 @@ class AdminController
     }
 
     public function TambahDokter() {
-        // simple validation
-        if (empty($_POST['nama']) || empty($_POST['spesialis']) || empty($_POST['username']) || empty($_POST['password'])) {
-            // bisa simpan flash message atau query string error
-            header("Location: ../index.php?action=lihat_dokter");
+        // validasi sederhana
+        if (empty($_POST['nama']) || empty($_POST['spesialis']) ||
+            empty($_POST['username']) || empty($_POST['password'])) {
+            echo "<script>
+                    alert('Nama, Spesialis, Username, dan Password wajib diisi');
+                    window.history.back();
+                </script>";
             exit;
         }
 
-        // mapping data
+        $hariArray = $_POST['hari_praktek'] ?? [];
+        if (empty($hariArray)) {
+            echo "<script>
+                    alert('Minimal pilih satu hari praktek');
+                    window.history.back();
+                </script>";
+            exit;
+        }
+
+        // Join ke string untuk disimpan di kolom hari_praktek
+        $hariPraktek = implode(', ', $hariArray);  // contoh: "Senin, Rabu, Kamis"
+
+
+        // handle upload foto
+        $fotoFileName = null;
+        if (!empty($_FILES['foto']['name'])) {
+            $fileTmp  = $_FILES['foto']['tmp_name'];
+            $fileName = $_FILES['foto']['name'];
+            $ext      = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            $allowedExt  = ['png', 'jpg', 'jpeg'];
+            $allowedMime = ['image/png', 'image/jpeg'];
+
+            $mime = mime_content_type($fileTmp);
+
+            if (!in_array($ext, $allowedExt) || !in_array($mime, $allowedMime) || getimagesize($fileTmp) === false) {
+                echo "<script>
+                        alert('Tipe file foto tidak valid. Hanya PNG, JPG, JPEG.');
+                        window.history.back();
+                    </script>";
+                exit;
+            }
+
+            $newName   = 'dokter_' . time() . '.' . $ext;
+            $targetDir = '../Pictures/Dokter/';
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+            if (!move_uploaded_file($fileTmp, $targetDir . $newName)) {
+                echo "<script>
+                        alert('Gagal menyimpan file foto.');
+                        window.history.back();
+                    </script>";
+                exit;
+            }
+
+            $fotoFileName = $newName;
+        }
+
         $data = [
-            'dokter_id'     => $_POST['dokter_id'] ?? null,
-            'nama'          => $_POST['nama'] ?? '',
-            'spesialis'     => $_POST['spesialis'] ?? '',
-            'hari_praktek'  => $_POST['hari_praktek'] ?? '',
-            'jam_mulai'     => $_POST['jam_mulai'] ?? '',
-            'jam_selesai'   => $_POST['jam_selesai'] ?? '',
-            'no_str'        => $_POST['no_str'] ?? '',
-            'username'      => $_POST['username'] ?? '',
-            'nip'           => $_POST['nip'] ?? '',
-            'foto'          => $_POST['foto'] ?? '',
-            'password'      => $_POST['password'] ?? '',
+            'nama'         => $_POST['nama'],
+            'spesialis'    => $_POST['spesialis'],
+            'hari_praktek' => $hariPraktek,
+            'jam_mulai'    => $_POST['jam_mulai'],
+            'jam_selesai'  => $_POST['jam_selesai'],
+            'username'     => $_POST['username'],
+            'password'     => $_POST['password'],
+            'foto'         => $fotoFileName,
         ];
 
-        $ok = $this->dokterModel->insert($data);
+        $this->dokterModel->insert($data);
 
-        // setelah insert, kembali ke list dokter
-        header("Location: ../index.php?action=lihat_dokter");
+        $_SESSION['success'] = 'Data dokter berhasil ditambahkan';
+        // kalau mau error juga bisa pakai $_SESSION['error']
+
+        header("Location: index.php?action=lihat_dokter");
         exit;
     }
+
 
     public function Dokter(){
         // Fetch doctor statistics

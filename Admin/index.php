@@ -7,6 +7,12 @@ $admincontroller = new AdminController($conn); // ⬅ kirim koneksi DB
 
 $action = $_GET['action'] ?? 'admin_login';
 
+// Proteksi: hanya blok halaman selain admin_login
+if (!isset($_SESSION['admin_username']) && $action !== 'admin_login') {
+    header("Location: index.php?action=admin_login");
+    exit;
+}
+
 switch ($action) {
     case 'admin_login':
         $admincontroller->Login();
@@ -27,7 +33,7 @@ switch ($action) {
         $admincontroller->getDokter();
         break;
     case 'update_dokter':
-        $admincontroller->updateDokter();
+        $admincontroller->updateDokter();   // sama persis namanya
         break;
     case 'delete_dokter':
         $admincontroller->deleteDokter();

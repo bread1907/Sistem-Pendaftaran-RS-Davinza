@@ -64,11 +64,6 @@ class AdminModel
         return $result['total'];
     }
 
-    
-
-
-
-
     // Calculate room occupancy (assuming 67 total rooms, occupied based on today's appointments)
     public function getRoomOccupancy()
     {

@@ -1,25 +1,3 @@
-<?php
-
-// echo "<pre style='background:#111;color:#0f0;padding:15px;border-radius:8px'>";
-// echo "DEBUG PRAKTEK DOKTER\n";
-// echo "=====================\n";
-// echo "Hari Server (EN)     : " . date('l') . "\n";
-// echo "Hari Server (ID)     : " . $hari[date('l')] . "\n";
-// echo "Hari Praktek DB      : " . $dokter['hari_praktek'] . "\n";
-// echo "Hari Cocok?          : " . ($is_hari_praktek ? 'YA' : 'TIDAK') . "\n\n";
-
-// echo "Jam Sekarang         : " . $jam_sekarang . "\n";
-// echo "Jam Mulai Praktek    : " . $jam_mulai . "\n";
-// echo "Jam Selesai Praktek  : " . $jam_selesai . "\n";
-// echo "Jam Cocok?           : " . ($is_jam_praktek ? 'YA' : 'TIDAK') . "\n\n";
-
-// echo "STATUS PRAKTEK FINAL : ";
-// var_export($is_praktek_hari_ini);
-// echo "\n=====================\n";
-// echo "</pre>";
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,7 +25,22 @@
 </head>
 
 <body class="bg-light">
+
     <?php include __DIR__ . "/Halaman_Admin/header_admin.php"; ?> <!-- Header terpisah -->
+
+
+    <!-- POPUP LOGIN SUCCESS -->
+    <?php if (!empty($_SESSION['success'])): ?>
+        <div class="modal fade show" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-4 text-center">
+                    <h4 class="text-success">Data Berhasil Ditambahkan!</h4>
+                    <p><?= $_SESSION['success']; ?></p>
+                    <a href="index.php?action=homepage" class="btn btn-primary mt-2">Tutup</a>
+                </div>
+            </div>
+        </div>
+        <?php unset($_SESSION['success']); endif; ?>
 
     <div class="container-fluid" id="main-content">
         <div class="row">
@@ -119,8 +112,8 @@
                                         <!-- Modal -->
                                         <div class="modal fade" id="modalTambahDokter" tabindex="-1">
                                             <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                <form action="/index.php?controller=dokter&action=store" method="POST"
-                                                    class="modal-content">
+                                                <form action="index.php?action=tambah_dokter" method="POST"
+                                                    enctype="multipart/form-data" class="modal-content">
 
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">Tambah Dokter</h5>
@@ -141,19 +134,35 @@
                                                                 required>
                                                         </div>
 
-                                                        <div class="col-md-6">
+                                                        <?php
+                                                        // $dokter di-pass dari controller
+                                                        $hariSelected = [];
+                                                        if (!empty($dokter['hari_praktek'])) {
+                                                            // "Senin, Rabu, Kamis" -> ['Senin', 'Rabu', 'Kamis']
+                                                            $hariSelected = array_map('trim', explode(',', $dokter['hari_praktek']));
+                                                        }
+                                                        $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                                                        ?>
+
+                                                        <div class="col-md-12">
                                                             <label class="form-label">Hari Praktek</label>
-                                                            <select name="hari_praktek" class="form-select" required>
-                                                                <option value="">-- Pilih --</option>
-                                                                <option>Senin</option>
-                                                                <option>Selasa</option>
-                                                                <option>Rabu</option>
-                                                                <option>Kamis</option>
-                                                                <option>Jumat</option>
-                                                                <option>Sabtu</option>
-                                                                <option>Minggu</option>
-                                                            </select>
+                                                            <div class="d-flex flex-wrap">
+                                                                <?php foreach ($hariList as $hari): ?>
+                                                                    <div class="form-check me-3">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="hari_praktek[]" value="<?= $hari; ?>"
+                                                                            id="hari_<?= strtolower($hari); ?>"
+                                                                            <?= in_array($hari, $hariSelected) ? 'checked' : ''; ?>>
+                                                                        <label class="form-check-label"
+                                                                            for="hari_<?= strtolower($hari); ?>">
+                                                                            <?= $hari; ?>
+                                                                        </label>
+                                                                    </div>
+                                                                <?php endforeach; ?>
+                                                            </div>
                                                         </div>
+
+
 
                                                         <div class="col-md-3">
                                                             <label class="form-label">Jam Mulai</label>
@@ -167,21 +176,23 @@
                                                                 required>
                                                         </div>
 
+                                                        <!-- no_str & nip otomatis: cukup readonly supaya user tahu polanya -->
                                                         <div class="col-md-6">
-                                                            <label class="form-label">No STR</label>
-                                                            <input type="text" name="no_str" class="form-control"
-                                                                required>
+                                                            <label class="form-label">No STR (otomatis)</label>
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Akan diisi otomatis" readonly>
                                                         </div>
 
                                                         <div class="col-md-6">
-                                                            <label class="form-label">NIP</label>
-                                                            <input type="text" name="nip" class="form-control" required>
+                                                            <label class="form-label">NIP (otomatis)</label>
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Akan diisi otomatis" readonly>
                                                         </div>
 
                                                         <div class="col-md-12">
                                                             <label class="form-label">Foto Dokter</label>
                                                             <input type="file" name="foto" class="form-control"
-                                                                accept="image/*">
+                                                                accept=".png,.jpg,.jpeg,image/png,image/jpeg">
                                                         </div>
 
                                                         <div class="col-md-6">
@@ -195,7 +206,6 @@
                                                             <input type="password" name="password" class="form-control"
                                                                 required>
                                                         </div>
-                                                    
                                                     </div>
 
                                                     <div class="modal-footer">
@@ -207,6 +217,7 @@
                                                 </form>
                                             </div>
                                         </div>
+
 
                                     </div>
                                     <div class="col-md-3 mb-3">

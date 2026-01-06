@@ -91,8 +91,7 @@ class DokterModel
     }
 
     // UPDATE DOKTER (tanpa ganti password dulu, biar simple)
-    public function updateById($data)
-    {
+    public function updateById(array $data) {
         $sql = "UPDATE dokter SET
                     nama         = ?,
                     spesialis    = ?,
@@ -104,10 +103,16 @@ class DokterModel
                     nip          = ?,
                     foto         = ?
                 WHERE dokter_id = ?";
+
         $stmt = mysqli_prepare($this->conn, $sql);
+
+        if (!$stmt) {
+            die('Prepare failed: ' . mysqli_error($this->conn));
+        }
+
         mysqli_stmt_bind_param(
             $stmt,
-            'sssssssss', // 9 string dulu
+            'ssssssssss',                 // 10 's' untuk 10 parameter
             $data['nama'],
             $data['spesialis'],
             $data['hari_praktek'],
@@ -117,9 +122,12 @@ class DokterModel
             $data['username'],
             $data['nip'],
             $data['foto'],
-            // dokter_id dipisah di bawah
+            $data['dokter_id']           // PARAMETER KE‑10
         );
+
+        return mysqli_stmt_execute($stmt);
     }
+
 
     // Hapus dokter
     public function deleteById($dokter_id)
@@ -131,70 +139,99 @@ class DokterModel
     }
 
     public function insert(array $data) {
-        // 1. Generate dokter_id kalau kosong
-        if (empty($data['dokter_id'])) {
-            $data['dokter_id'] = 'DOK' . strtoupper(substr(md5(uniqid()), 0, 6));
-        }
-
-        // 2. Generate no_str dan nip otomatis pola STR00x
-        // ambil max no_str yang ada
-        $sqlMax = "SELECT MAX(no_str) AS max_str FROM dokter WHERE no_str LIKE 'STR00%'";
+        // 1. Generate no_str & nip otomatis (STR00x)
+        $sqlMax = "SELECT MAX(no_str) AS max_str FROM dokter WHERE no_str LIKE 'STR%'";
         $resMax = mysqli_query($this->conn, $sqlMax);
         $rowMax = mysqli_fetch_assoc($resMax);
         $lastStr = $rowMax['max_str'] ?? null;
 
         $nextNumber = 1;
         if ($lastStr) {
-            // ambil angka di belakang STR00, misal STR005 -> 5
-            $numPart = (int)substr($lastStr, 5);
+            // ambil angka setelah STR, misal STR020 -> 20
+            $numPart = (int)substr($lastStr, 3);
             $nextNumber = $numPart + 1;
         }
 
-        // format STR00x (kalau mau 2 digit, tinggal ubah sprintf)
-        $generatedStr = 'STR00' . $nextNumber;
+        // STR00x (padding 2 digit, bisa kamu ubah ke 3 digit kalau mau STR001)
+        $generatedStr = 'STR' . sprintf('%03d', $nextNumber);
 
-        // pakai untuk no_str & nip kalau tidak diisi manual
-        if (empty($data['no_str'])) {
-            $data['no_str'] = $generatedStr;
-        }
-        if (empty($data['nip'])) {
-            $data['nip'] = $generatedStr;
-        }
+        $no_str = $generatedStr;
+        $nip    = $generatedStr;
 
-        // 3. Hash password
+        // 2. Hash password
         $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 
-        // 4. Insert
+        // 3. Siapkan query
         $sql = "INSERT INTO dokter
-            (dokter_id, nama, spesialis, hari_praktek, jam_mulai, jam_selesai,
+            (nama, spesialis, hari_praktek, jam_mulai, jam_selesai,
             no_str, username, nip, foto, password)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = mysqli_prepare($this->conn, $sql);
         mysqli_stmt_bind_param(
             $stmt,
-            'sssssssssss',
-            $data['dokter_id'],
+            'ssssssssss',
             $data['nama'],
             $data['spesialis'],
             $data['hari_praktek'],
             $data['jam_mulai'],
             $data['jam_selesai'],
-            $data['no_str'],
+            $no_str,
             $data['username'],
-            $data['nip'],
-            $data['foto'],
+            $nip,
+            $data['foto'],      // nama file dari upload
             $hashedPassword
         );
 
         return mysqli_stmt_execute($stmt);
     }
 
-
-    public function getSpesialis()
-    {
+    public function getSpesialis() {
+        $data = [];
         $sql = "SELECT DISTINCT spesialis FROM dokter ORDER BY spesialis ASC";
-        return mysqli_query($this->conn, $sql);
+        $res = mysqli_query($this->conn, $sql);
+        while ($row = mysqli_fetch_assoc($res)) {
+            $data[] = $row['spesialis'];
+        }
+        return $data;
+    }
+
+    public function getFiltered($spesialis, $hari){
+        $where = [];
+        $params = [];
+        $types = '';
+
+        if ($spesialis !== '') {
+            $where[] = "spesialis = ?";
+            $params[] = $spesialis;
+            $types .= 's';
+        }
+
+        if ($hari !== '') {
+            // kolom hari_praktek: "Senin, Rabu, Kamis"
+            $where[] = "hari_praktek LIKE ?";
+            $params[] = '%' . $hari . '%';
+            $types .= 's';
+        }
+
+        $sql = "SELECT * FROM dokter";
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+        $sql .= " ORDER BY nama ASC";
+
+        $stmt = mysqli_prepare($this->conn, $sql);
+        if (!empty($params)) {
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+        }
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $rows = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $rows[] = $row;
+        }
+        return $rows;
     }
 
     // Ambil dokter berdasarkan spesialis
