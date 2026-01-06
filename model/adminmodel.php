@@ -1,13 +1,16 @@
 <?php
-class AdminModel {
+class AdminModel
+{
 
     private $conn;
 
-    public function __construct($conn) {
+    public function __construct($conn)
+    {
         $this->conn = $conn;
     }
 
-    public function login($username) {
+    public function login($username)
+    {
         $stmt = $this->conn->prepare("SELECT * FROM admin WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -22,7 +25,8 @@ class AdminModel {
     }
 
     // Get total patients
-    public function getTotalPatients() {
+    public function getTotalPatients()
+    {
         $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM pasien");
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
@@ -30,7 +34,8 @@ class AdminModel {
     }
 
     // Get total active doctors
-    public function getTotalDoctors() {
+    public function getTotalDoctors()
+    {
         $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM dokter");
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
@@ -38,7 +43,8 @@ class AdminModel {
     }
 
     // Get appointments today
-    public function getAppointmentsToday() {
+    public function getAppointmentsToday()
+    {
         $today = date('Y-m-d');
         $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM jadwal_temu WHERE tanggal_temu = ?");
         $stmt->bind_param("s", $today);
@@ -48,7 +54,8 @@ class AdminModel {
     }
 
     // Get completed appointments today
-    public function getCompletedAppointmentsToday() {
+    public function getCompletedAppointmentsToday()
+    {
         $today = date('Y-m-d');
         $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM jadwal_temu WHERE tanggal_temu = ? AND status = 'Completed'");
         $stmt->bind_param("s", $today);
@@ -57,8 +64,14 @@ class AdminModel {
         return $result['total'];
     }
 
+    
+
+
+
+
     // Calculate room occupancy (assuming 67 total rooms, occupied based on today's appointments)
-    public function getRoomOccupancy() {
+    public function getRoomOccupancy()
+    {
         $totalRooms = 67;
         $occupied = $this->getAppointmentsToday();
         $percentage = round(($occupied / $totalRooms) * 100);
@@ -102,7 +115,7 @@ class AdminModel {
     // }
 
     // Get total specializations
-    public function getTotalSpecializations() {
+    public function getTotalSpecializations(){
         $stmt = $this->conn->prepare("SELECT COUNT(DISTINCT spesialis) as total FROM dokter");
         $stmt->execute();
         $result = $stmt->get_result()->fetch_assoc();
@@ -110,7 +123,7 @@ class AdminModel {
     }
 
     // Get average patients per day per doctor
-    public function getAveragePatientsPerDay() {
+    public function getAveragePatientsPerDay(){
         $stmt = $this->conn->prepare("
             SELECT COUNT(jt.jadwal_id) / COUNT(DISTINCT DATE(jt.tanggal_temu)) / COUNT(DISTINCT jt.dokter_id) as avg
             FROM jadwal_temu jt
@@ -120,6 +133,28 @@ class AdminModel {
         $result = $stmt->get_result()->fetch_assoc();
         return round($result['avg'] ?? 0);
     }
+
+    public function insertDokter($data){
+        $sql = "INSERT INTO dokter 
+            (nama, spesialis, hari_praktek, jam_mulai, jam_selesai, no_str, username, nip, password)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $this->db->prepare($sql);
+
+        return $stmt->execute([
+            $data['nama'],
+            $data['spesialis'],
+            $data['hari_praktek'],
+            $data['jam_mulai'],
+            $data['jam_selesai'],
+            $data['no_str'],
+            $data['username'],
+            $data['nip'],
+            password_hash($data['password'], PASSWORD_DEFAULT)
+        ]);
+    }
+
+
 }
 
 ?>

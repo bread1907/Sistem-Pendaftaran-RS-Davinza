@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Asia/Jakarta');
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -106,6 +108,8 @@ $statistik['pasien_bulan_ini'] = $stmt_bulan->get_result()->fetch_assoc()['pasie
 $stmt_bulan->close();
 
 
+
+
 include __DIR__ . "/template/header_dokter.php";
 ?>
 
@@ -113,7 +117,7 @@ include __DIR__ . "/template/header_dokter.php";
     <!-- HEADER -->
     <div class="mb-4">
         <h2 class="fw-bold mb-1 text-primary">
-            <i class="bi bi-person-circle"></i> Selamat Datang, Dr. <?= htmlspecialchars($_SESSION['dokter_nama']); ?>
+            <i class="bi bi-person-circle"></i> Selamat Datang, <?= htmlspecialchars($_SESSION['dokter_nama']); ?>
         </h2>
         <div class="text-muted">
             <?= $hari[date('l')] ?>, <?= date('d F Y') ?> | Spesialis: <?= htmlspecialchars($dokter['spesialis']); ?>

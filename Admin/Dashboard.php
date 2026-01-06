@@ -1,3 +1,25 @@
+<?php
+
+// echo "<pre style='background:#111;color:#0f0;padding:15px;border-radius:8px'>";
+// echo "DEBUG PRAKTEK DOKTER\n";
+// echo "=====================\n";
+// echo "Hari Server (EN)     : " . date('l') . "\n";
+// echo "Hari Server (ID)     : " . $hari[date('l')] . "\n";
+// echo "Hari Praktek DB      : " . $dokter['hari_praktek'] . "\n";
+// echo "Hari Cocok?          : " . ($is_hari_praktek ? 'YA' : 'TIDAK') . "\n\n";
+
+// echo "Jam Sekarang         : " . $jam_sekarang . "\n";
+// echo "Jam Mulai Praktek    : " . $jam_mulai . "\n";
+// echo "Jam Selesai Praktek  : " . $jam_selesai . "\n";
+// echo "Jam Cocok?           : " . ($is_jam_praktek ? 'YA' : 'TIDAK') . "\n\n";
+
+// echo "STATUS PRAKTEK FINAL : ";
+// var_export($is_praktek_hari_ini);
+// echo "\n=====================\n";
+// echo "</pre>";
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,12 +47,12 @@
 </head>
 
 <body class="bg-light">
-    <?php include __DIR__ . "/Halaman_Admin/header_admin.php"; ?>  <!-- Header terpisah -->
+    <?php include __DIR__ . "/Halaman_Admin/header_admin.php"; ?> <!-- Header terpisah -->
 
     <div class="container-fluid" id="main-content">
         <div class="row">
             <!-- Sidebar dipindah ke sini -->
-             <?php include __DIR__ . "/Halaman_Admin/sidebar_admin.php"; ?>
+            <?php include __DIR__ . "/Halaman_Admin/sidebar_admin.php"; ?>
 
             <!-- Konten sejajar di kanan -->
             <div class="col-lg-10 ms-auto p-4 overflow-hidden">
@@ -70,7 +92,9 @@
                             <div class="card-body">
                                 <h5 class="card-title">Keterisian Kamar</h5>
                                 <h2 class="text-danger"><?php echo $roomOccupancy['percentage']; ?>%</h2>
-                                <p class="text-muted"><?php echo $roomOccupancy['occupied']; ?> dari <?php echo $roomOccupancy['total']; ?> kamar</p>
+                                <p class="text-muted"><?php echo $roomOccupancy['occupied']; ?> dari
+                                    <?php echo $roomOccupancy['total']; ?> kamar
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -86,9 +110,104 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-3 mb-3">
-                                        <button class="btn custom-bg text-white w-100">
+                                        <!-- Tombol Tambah Dokter -->
+                                        <button class="btn custom-bg text-white w-100" data-bs-toggle="modal"
+                                            data-bs-target="#modalTambahDokter">
                                             <i class="bi bi-person-plus"></i> Tambah Dokter
                                         </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="modalTambahDokter" tabindex="-1">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <form action="/index.php?controller=dokter&action=store" method="POST"
+                                                    class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Tambah Dokter</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+
+                                                    <div class="modal-body row g-3">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Nama Dokter</label>
+                                                            <input type="text" name="nama" class="form-control"
+                                                                required>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Spesialis</label>
+                                                            <input type="text" name="spesialis" class="form-control"
+                                                                required>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Hari Praktek</label>
+                                                            <select name="hari_praktek" class="form-select" required>
+                                                                <option value="">-- Pilih --</option>
+                                                                <option>Senin</option>
+                                                                <option>Selasa</option>
+                                                                <option>Rabu</option>
+                                                                <option>Kamis</option>
+                                                                <option>Jumat</option>
+                                                                <option>Sabtu</option>
+                                                                <option>Minggu</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">Jam Mulai</label>
+                                                            <input type="time" name="jam_mulai" class="form-control"
+                                                                required>
+                                                        </div>
+
+                                                        <div class="col-md-3">
+                                                            <label class="form-label">Jam Selesai</label>
+                                                            <input type="time" name="jam_selesai" class="form-control"
+                                                                required>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">No STR</label>
+                                                            <input type="text" name="no_str" class="form-control"
+                                                                required>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">NIP</label>
+                                                            <input type="text" name="nip" class="form-control" required>
+                                                        </div>
+
+                                                        <div class="col-md-12">
+                                                            <label class="form-label">Foto Dokter</label>
+                                                            <input type="file" name="foto" class="form-control"
+                                                                accept="image/*">
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Username</label>
+                                                            <input type="text" name="username" class="form-control"
+                                                                required>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Password</label>
+                                                            <input type="password" name="password" class="form-control"
+                                                                required>
+                                                        </div>
+                                                    
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-success">
+                                                            Simpan Dokter
+                                                        </button>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <button class="btn btn-success w-100">
@@ -120,16 +239,19 @@
                             </div>
                             <div class="card-body">
                                 <canvas id="patientChart" height="200"></canvas>
-                                <p class="text-muted mt-3">Grafik kunjungan pasien menunjukkan peningkatan 15% dibandingkan bulan sebelumnya.</p>
+                                <p class="text-muted mt-3">Grafik kunjungan pasien menunjukkan peningkatan 15%
+                                    dibandingkan bulan sebelumnya.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4 mb-4">
+                        <!-- Notifikasi -->
                         <div class="card">
                             <div class="card-header">
                                 <h5>Notifikasi Terbaru</h5>
                             </div>
-                            <div class="card-body">
+
+                            <!-- <div class="card-body">
                                 <div class="mb-3">
                                     <small class="text-muted">2 jam yang lalu</small>
                                     <p>Janji temu dengan Dr. Sari dibatalkan</p>
@@ -143,7 +265,7 @@
                                     <p>Laporan bulanan telah dibuat</p>
                                 </div>
                                 <button class="btn btn-outline-primary btn-sm">Lihat Semua</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
