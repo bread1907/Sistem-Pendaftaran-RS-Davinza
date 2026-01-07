@@ -1,6 +1,6 @@
 </main>
 
-<footer class="bg-white border-top mt-5">
+<footer class="bg-white border-top mt-auto">
     <div class="container py-3">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
             <div class="text-muted">
