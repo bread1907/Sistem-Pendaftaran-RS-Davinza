@@ -2,11 +2,14 @@
 session_start();
 include "koneksi.php";
 
-include "controller/pasiencontroller.php";
-include "controller/jadwalcontroller.php";
-include "controller/doktercontroller.php";
+require_once "library/MailService.php";
+require_once "controller/pasiencontroller.php";
+require_once "controller/jadwalcontroller.php";
+require_once "controller/doktercontroller.php";
 
-$pasiencontroller = new PasienController($conn);
+$mailService = new MailService();
+
+$pasiencontroller = new PasienController($conn, $mailService);
 $doktercontroller = new DokterController($conn);
 $jadwalcontroller = new JadwalController($conn);
 
@@ -43,7 +46,12 @@ switch ($action) {
     case 'temukandokter':
         $doktercontroller->Temukan();
         break;
-    case 'homepage':
+    case 'verifikasi':
+        $pasiencontroller->KirimKodeVerifikasi();
+        break;
+    case 'verifikasi_kode':
+        $pasiencontroller->RegisterVerifyCode();
+        break;
     default:
         $pasiencontroller->Homepage();
         break;

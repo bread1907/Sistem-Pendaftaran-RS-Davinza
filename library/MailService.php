@@ -16,36 +16,34 @@ class MailService {
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'dindxsalsa@gmail.com';
-            $mail->Password   = 'lhpoeeoetfexpauq';
+            $mail->Password   = 'ewanuhybuefdmesm';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            // 👇 DEBUG DI SINI
+            // DEBUG (aktifkan hanya saat testing)
             // $mail->SMTPDebug = 2;
             // $mail->Debugoutput = 'html';
 
-            $mail->CharSet    = 'UTF-8';
+            $mail->CharSet = 'UTF-8';
             $mail->setFrom('dindxsalsa@gmail.com', 'Davinza Hospital');
-            $mail->isHTML(true);
-
-            // DEBUG sementara
-            // $mail->SMTPDebug = 2;
-
             $mail->addAddress($email);
+
+            $mail->isHTML(true);
             $mail->Subject = 'Kode Verifikasi Akun Davinza Hospital';
-            $mail->Body    = "
+            $mail->Body = "
                 <p>Halo,</p>
-                <p>Berikut kode verifikasi akun Anda:</p>
+                <p>Berikut kode verifikasi akun Davinza Hospital Anda:</p>
                 <h2>$kode</h2>
                 <p>Berlaku 10 menit.</p>
             ";
+            $mail->AltBody = "Kode verifikasi akun Anda: $kode (berlaku 10 menit)";
 
             return $mail->send();
 
         } catch (Exception $e) {
-            $_SESSION['error'] = "Mailer error: " . $mail->ErrorInfo;
             return false;
         }
     }
 }
+
 

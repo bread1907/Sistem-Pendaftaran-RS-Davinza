@@ -20,11 +20,10 @@ class PasienModel
     }
 
     // Insert data pasien baru
-    public function insert($data)
-    {
+    public function insert($data) {
         $sql = "INSERT INTO pasien
-                (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($this->conn, $sql);
         mysqli_stmt_bind_param(
             $stmt,
@@ -38,8 +37,9 @@ class PasienModel
             $data['alamat'],
             $data['no_hp']
         );
-        mysqli_stmt_execute($stmt);
+        return mysqli_stmt_execute($stmt);
     }
+
 
     public function simpanKodeVerifikasi($email, $kode, $expiresAt){
         // hapus kode lama untuk email ini

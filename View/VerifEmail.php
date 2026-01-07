@@ -1,11 +1,10 @@
 <?php
     session_start();
-    $reg = $_SESSION['reg_pasien'] ?? null;
-    if (!$reg) {
+    $email = $_SESSION['reg_email'] ?? null;
+    if (!$email) {
         header('Location: ../index.php?action=register');
         exit;
     }
-    $email = $reg['email'];
 ?>
 
 <!DOCTYPE html>
