@@ -1,26 +1,6 @@
 <?php include __DIR__ . "/Halaman/header.php"; ?>
 
 <style>
-    .doctor-card {
-    border-radius: 16px;
-    overflow: hidden;
-    transition: 0.3s;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-}
-
-.doctor-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 22px rgba(0,0,0,0.18);
-}
-
-.doctor-img {
-    width: 100%;
-    height: 280px;
-    object-fit: contain;
-    object-position: 50% 15%;
-}
-
-
 .doctor-hero {
     position: relative;
     background: url('Pictures/ramedokternya.jpg') center/cover no-repeat;
