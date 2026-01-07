@@ -44,7 +44,7 @@
     </style>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-dokter shadow-sm">
     <div class="container">
@@ -62,4 +62,4 @@
     </div>
 </nav>
 
-<main class="py-4">
+<main class="container py-4 flex-fill">
