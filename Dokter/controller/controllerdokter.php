@@ -91,12 +91,13 @@ public function formRekamMedis() {
         die("Data tidak lengkap");
     }
 
-    // Ambil data rekam medis jika sudah ada
+    // 🔥 FIX: ambil berdasarkan JADWAL
     $rmModel = new RekamMedisModel($this->conn);
-    $existing = $rmModel->getByPasienDokter($pasien_id, $_SESSION['dokter_id']);
+    $existing = $rmModel->getByJadwal($jadwal_id);
 
     include 'Halaman/form_rekam_medis.php';
 }
+
 
 
     // ================= SIMPAN REKAM MEDIS =================
@@ -111,20 +112,23 @@ public function simpanRekamMedis() {
     $pasien_id = $_POST['pasien_id'] ?? null;
     $jadwal_id = $_POST['jadwal_id'] ?? null;
     $status    = $_POST['status'] ?? null;
+
     $diagnosa  = trim($_POST['diagnosa'] ?? '');
     $tindakan  = trim($_POST['tindakan'] ?? '');
     $resep     = trim($_POST['resep_obat'] ?? '');
     $catatan   = trim($_POST['catatan'] ?? '');
 
-    if (!$pasien_id || !$jadwal_id || $diagnosa === '' || $tindakan === '' || !$status) {
+    if (!$pasien_id || !$jadwal_id || !$status || $diagnosa === '' || $tindakan === '') {
         die("Data tidak lengkap");
     }
 
     $rmModel = new RekamMedisModel($this->conn);
-    $existing = $rmModel->getByPasienDokter($pasien_id, $dokter_id);
+
+    // 🔥 PENTING: cek berdasarkan JADWAL
+    $existing = $rmModel->getByJadwal($jadwal_id);
 
     if ($existing) {
-        // update jika sudah ada
+        // UPDATE
         $rmModel->updateRekamMedis(
             $existing['rekam_id'],
             $diagnosa,
@@ -133,10 +137,11 @@ public function simpanRekamMedis() {
             $catatan
         );
     } else {
-        // insert baru
+        // INSERT
         $rmModel->insertRekamMedis(
             $dokter_id,
             $pasien_id,
+            $jadwal_id,
             $diagnosa,
             $tindakan,
             $resep,
@@ -151,6 +156,7 @@ public function simpanRekamMedis() {
     header("Location: index.php?aksi=daftarpasiendokter");
     exit;
 }
+
 
 
 

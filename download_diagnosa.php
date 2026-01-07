@@ -29,7 +29,7 @@ SELECT
     jt.keluhan
 FROM jadwal_temu jt
 JOIN pasien p ON jt.pasien_id = p.pasien_id
-JOIN rekam_medis rm ON rm.pasien_id = jt.pasien_id
+JOIN rekam_medis rm ON rm.jadwal_id = jt.jadwal_id
 JOIN dokter d ON rm.dokter_id = d.dokter_id
 WHERE jt.jadwal_id = ? AND jt.pasien_id = ?
 LIMIT 1
