@@ -32,7 +32,10 @@ switch ($action) {
         $pasiencontroller->Layanan();
         break;
     case 'janjitemu':
-        $jadwalcontroller->save();
+        $pasiencontroller->Temu(); // menampilkan form jadwal
+        break;
+    case 'simpan_jadwal':
+        $jadwalcontroller->save(); // mengeksekusi insert jadwal
         break;
     case 'profile':
         $pasiencontroller->Profile();
@@ -46,7 +49,6 @@ switch ($action) {
     case 'temukandokter':
         $doktercontroller->Temukan();
         break;
-    case 'homepage':
     default:
         $pasiencontroller->Homepage();
         break;

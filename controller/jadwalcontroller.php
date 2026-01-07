@@ -10,10 +10,7 @@ class JadwalController {
 
     // Simpan jadwal dari form
     public function save(){
-        if(!isset($_SESSION['pasien_id'])){
-            echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='index.php';</script>";
-            exit;
-        }
+
 
         $dokter_id = $_POST['dokter_id'];
         $pasien_id = $_SESSION['pasien_id'];

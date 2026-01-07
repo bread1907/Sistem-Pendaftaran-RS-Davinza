@@ -128,4 +128,10 @@ class PasienController
     public function Profile()   { include "View/profile.php"; }
     public function Fasilitas() { include "View/fasilitas.php"; }
     public function Emergency() { include "View/emergencycall.php"; }
+    public function Temu(){ 
+        if(!isset($_SESSION['pasien_id'])){
+            echo "<script>alert('Silakan login terlebih dahulu.'); window.location.href='index.php';</script>";
+            exit;
+        }
+        include "View/jadwal_temu.php";}
 }
