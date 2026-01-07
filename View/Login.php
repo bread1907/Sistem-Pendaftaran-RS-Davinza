@@ -141,6 +141,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </div>
 
+<!-- ====================== POPUP ===================== -->
+<?php if (isset($_SESSION['popup_success'])): ?>
+<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.7);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <h4 class="text-success mb-3">✔ Berhasil!</h4>
+      <p><?= $_SESSION['popup_success']; ?></p>
+      <button class="btn btn-primary mt-2" onclick="closePopup()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function closePopup(){
+    document.querySelector('.modal').style.display = 'none';
+}
+</script>
+
+<?php unset($_SESSION['popup_success']); endif; ?>
+<!-- =================== END POPUP =================== -->
+
+
 <?php include __DIR__ . "/Halaman/footer.php"; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

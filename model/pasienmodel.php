@@ -20,28 +20,50 @@ class PasienModel
     }
 
     // Insert data pasien baru
-    public function insert($data) {
-        $sql = "INSERT INTO pasien
-            (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public function insert($data){
+    $sql = "INSERT INTO pasien
+        (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = mysqli_prepare($this->conn, $sql);
+
+    if (!$stmt) {
+        die("Prepare error: " . mysqli_error($this->conn));
+    }
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        'ssssssss',
+        $data['nik'],
+        $data['email'],
+        $data['username'],
+        $data['password'],
+        $data['tanggal_lahir'],
+        $data['jenis_kelamin'],
+        $data['alamat'],
+        $data['no_hp']
+    );
+
+    if (!mysqli_stmt_execute($stmt)) {
+        die("Execute error: " . mysqli_stmt_error($stmt));
+    }
+
+    return true;
+}
+
+
+    public function setEmailVerified($email){
+        $sql = "UPDATE pasien SET email_verified = 1 WHERE email = ?";
         $stmt = mysqli_prepare($this->conn, $sql);
-        mysqli_stmt_bind_param(
-            $stmt,
-            'ssssssss',
-            $data['nik'],
-            $data['email'],
-            $data['username'],
-            $data['password'],
-            $data['tanggal_lahir'],
-            $data['jenis_kelamin'],
-            $data['alamat'],
-            $data['no_hp']
-        );
-        return mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_param($stmt, 's', $email);
+        mysqli_stmt_execute($stmt);
     }
 
 
-    public function simpanKodeVerifikasi($email, $kode, $expiresAt){
+
+
+    public function simpanKodeVerifikasi($email, $kode, $expiresAt)
+    {
         // hapus kode lama untuk email ini
         $sqlDel = "DELETE FROM email_verifikasi WHERE email = ?";
         $stmtDel = mysqli_prepare($this->conn, $sqlDel);
@@ -55,7 +77,8 @@ class PasienModel
         mysqli_stmt_execute($stmt);
     }
 
-    public function cariKodeVerifikasi($email, $kode){
+    public function cariKodeVerifikasi($email, $kode)
+    {
         $sql = "SELECT * FROM email_verifikasi WHERE email = ? AND kode = ? LIMIT 1";
         $stmt = mysqli_prepare($this->conn, $sql);
         mysqli_stmt_bind_param($stmt, 'ss', $email, $kode);
@@ -64,7 +87,8 @@ class PasienModel
         return mysqli_fetch_assoc($res) ?: null;
     }
 
-    public function tandaiKodeTerpakai($id){
+    public function tandaiKodeTerpakai($id)
+    {
         $sql = "UPDATE email_verifikasi SET is_used = 1 WHERE id = ?";
         $stmt = mysqli_prepare($this->conn, $sql);
         mysqli_stmt_bind_param($stmt, 'i', $id);
@@ -143,7 +167,7 @@ class PasienModel
     // Update data pasien
     public function update($id, $data)
     {
-        $sql = "UPDATE $this->table SET email=?, username=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, no_hp=? nik=? WHERE pasien_id=?";
+        $sql = "UPDATE $this->table SET email=?, username=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, no_hp=?, nik=? WHERE pasien_id=?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param(
             "sssssssi",

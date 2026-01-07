@@ -52,9 +52,14 @@ switch ($action) {
     case 'verifikasi':
         $pasiencontroller->KirimKodeVerifikasi();
         break;
-    case 'verifikasi_kode':
+    case 'verif_email_page':
+        $pasiencontroller->VerifEmailPage();
+        break;
+    case 'verif_email':
         $pasiencontroller->RegisterVerifyCode();
         break;
+    case 'homepage':
+        $pasiencontroller->Homepage();
     default:
         $pasiencontroller->Homepage();
         break;

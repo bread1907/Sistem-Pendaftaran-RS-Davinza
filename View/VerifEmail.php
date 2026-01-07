@@ -1,5 +1,4 @@
 <?php
-    session_start();
     $email = $_SESSION['reg_email'] ?? null;
     if (!$email) {
         header('Location: ../index.php?action=register');
@@ -51,12 +50,12 @@
                         </div>
                         <?php endif; ?>
 
-                        <form action="../index.php?action=register_verify_code" method="POST">
+                        <form action="index.php?action=verif_email" method="POST">
                             <div class="mb-3">
                                 <label class="form-label">Kode Verifikasi</label>
                                 <input type="text" name="kode" class="form-control" maxlength="6" required>
                             </div>
-                            <button type="submit" class="btn btn-success w-100">Verifikasi & Buat Akun</button>
+                            <button type="submit" name="submit_kode" class="btn btn-success w-100">Verifikasi & Buat Akun</button>
                         </form>
                     </div>
                 </div>

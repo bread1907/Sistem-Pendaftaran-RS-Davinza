@@ -74,8 +74,8 @@ if (session_status() === PHP_SESSION_NONE) {
                     }
                         
                 ?>
-                <form action="../index.php" method="POST">
-                    <input type="hidden" name="action" value="verifikasi">
+                
+                <form action="index.php?action=verifikasi" method="POST">
                     <div class="container-fluid">
                         <div class="row">    
 
