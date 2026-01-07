@@ -5,6 +5,17 @@ if (session_status() === PHP_SESSION_NONE) {
 $current = $_GET['action'] ?? '';
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RS Davinza</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
 <style>
 :root {
     --primary: #0077C0;
@@ -52,6 +63,8 @@ $current = $_GET['action'] ?? '';
     z-index: 2000 !important;
 }
 </style>
+</head>
+<body>
 
 <nav class="navbar navbar-expand-lg navbar-custom">
 <div class="container py-3">

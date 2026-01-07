@@ -12,7 +12,7 @@ $jadwalcontroller = new JadwalController($conn);
 
 $action = $_GET['action'] ?? 'homepage';
 
-switch($action){
+switch ($action) {
     case 'register':
         $pasiencontroller->Register();
         break;
@@ -43,8 +43,8 @@ switch($action){
     case 'temukandokter':
         $doktercontroller->Temukan();
         break;
+    case 'homepage':
     default:
         $pasiencontroller->Homepage();
         break;
 }
-?>
