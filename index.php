@@ -1,4 +1,8 @@
 <?php
+// ==== DEBUG ERROR ====
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 include "koneksi.php";
 
@@ -6,9 +10,9 @@ include "controller/pasiencontroller.php";
 include "controller/jadwalcontroller.php";
 include "controller/doktercontroller.php";
 
-$pasiencontroller = new PasienController();
-$doktercontroller = new DokterController();
-$jadwalcontroller = new JadwalController($conn); // kirim koneksi ke controller
+$pasiencontroller = new PasienController($conn);
+$doktercontroller = new DokterController($conn);
+$jadwalcontroller = new JadwalController($conn);
 
 $action = $_GET['action'] ?? 'homepage';
 
@@ -29,10 +33,7 @@ switch($action){
         $pasiencontroller->Layanan();
         break;
     case 'janjitemu':
-        $pasiencontroller->Temu(); // menampilkan form jadwal
-        break;
-    case 'simpan_jadwal':
-        $jadwalcontroller->save(); // mengeksekusi insert jadwal
+        $jadwalcontroller->save();
         break;
     case 'profile':
         $pasiencontroller->Profile();
@@ -49,4 +50,5 @@ switch($action){
     default:
         $pasiencontroller->Homepage();
         break;
-}?>
+}
+?>

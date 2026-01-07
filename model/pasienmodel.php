@@ -17,24 +17,26 @@ class PasienModel {
     }
 
     // Insert data pasien baru
-    public function insert($data) {
-        $sql = "INSERT INTO $this->table (email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp, nik)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ssssssss",
-            $data['email'], 
-            $data['username'], 
-            $data['password'], 
-            $data['tanggal_lahir'], 
-            $data['jenis_kelamin'], 
-            $data['alamat'], 
-            $data['no_hp'],
-            $data['nik']
+    public function insert(array $data) {
+        $sql = "INSERT INTO pasien
+            (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_prepare($this->conn, $sql);
+        mysqli_stmt_bind_param(
+            $stmt,
+            'ssssssss',
+            $data['nik'],
+            $data['email'],
+            $data['username'],
+            $data['password'],
+            $data['tanggal_lahir'],
+            $data['jenis_kelamin'],
+            $data['alamat'],
+            $data['no_hp']
         );
-
-        return $stmt->execute();
+        mysqli_stmt_execute($stmt);
     }
+
 
     // Ambil data pasien berdasarkan email
     public function getByEmail($email) {
@@ -52,6 +54,52 @@ class PasienModel {
         $stmt->bind_param("i", $id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function getPasienWithSummary() {
+        $sql = "
+        SELECT
+            p.pasien_id,
+            p.username      AS nama,
+            p.tanggal_lahir,
+            p.jenis_kelamin,
+            p.alamat,
+            p.no_hp,
+
+            TIMESTAMPDIFF(YEAR, p.tanggal_lahir, CURDATE()) AS usia,
+
+            jt_terakhir.tanggal_temu    AS kunjungan_terakhir_tgl,
+            jt_terakhir.jam_temu        AS kunjungan_terakhir_jam,
+            jt_terakhir.status          AS status_terakhir,
+            d.nama                      AS dokter_terakhir
+
+        FROM pasien p
+
+        LEFT JOIN (
+            SELECT j1.*
+            FROM jadwal_temu j1
+            JOIN (
+                SELECT pasien_id, MAX(CONCAT(tanggal_temu, ' ', jam_temu)) AS max_waktu
+                FROM jadwal_temu
+                GROUP BY pasien_id
+            ) j2
+            ON j1.pasien_id = j2.pasien_id
+            AND CONCAT(j1.tanggal_temu, ' ', j1.jam_temu) = j2.max_waktu
+        ) jt_terakhir
+        ON jt_terakhir.pasien_id = p.pasien_id
+
+        LEFT JOIN dokter d
+        ON d.dokter_id = jt_terakhir.dokter_id
+
+        ORDER BY p.username ASC
+        ";
+
+        $res = mysqli_query($this->conn, $sql);
+        $data = [];
+        while ($row = mysqli_fetch_assoc($res)) {
+            $data[] = $row;
+        }
+        return $data;
     }
 
     // Update data pasien

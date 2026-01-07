@@ -1,20 +1,24 @@
 <?php
-class PasienController {
+class PasienController
+{
+    private $conn;
     private $pasienModel;
+    private MailService $mailService;
 
-    public function __construct() {
+    public function __construct($conn, MailService $mailService) {
         require_once __DIR__ . '/../Model/PasienModel.php';
-        global $conn;
 
         if (!$conn) {
             die("Koneksi database tidak ditemukan.");
         }
 
+        $this->conn        = $conn;
         $this->pasienModel = new PasienModel($conn);
+        $this->mailService = $mailService;
     }
 
     // ================= REGISTER ===================
-    public function Register() {
+    public function Register(){
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             include "View/Register.php";
@@ -24,9 +28,9 @@ class PasienController {
         $email = trim($_POST['email']);
         $username = trim($_POST['username']);
         $password = $_POST['password'];
-        $confirm  = $_POST['confirm_password'];
-        $hashed_password = 
-        $tanggal_lahir = $_POST['tanggal_lahir'];
+        $confirm = $_POST['confirm_password'];
+        $hashed_password =
+            $tanggal_lahir = $_POST['tanggal_lahir'];
         $jenis_kelamin = $_POST['jenis_kelamin'];
         $alamat = trim($_POST['alamat']);
         $no_hp = trim($_POST['no_hp']);
@@ -56,23 +60,23 @@ class PasienController {
             exit;
         }
 
-        // INSERT DATA
-        $insert = $this->pasienModel->insert([
-            'email' => $email,
-            'username' => $username,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-            'tanggal_lahir' => $tanggal_lahir,
-            'jenis_kelamin' => $jenis_kelamin,
-            'alamat' => $alamat,
-            'no_hp' => $no_hp,
-            'nik' => $nik
-        ]);
+        //INSERT DATA
+        // $insert = $this->pasienModel->insert([
+        //     'email' => $email,
+        //     'username' => $username,
+        //     'password' => password_hash($password, PASSWORD_DEFAULT),
+        //     'tanggal_lahir' => $tanggal_lahir,
+        //     'jenis_kelamin' => $jenis_kelamin,
+        //     'alamat' => $alamat,
+        //     'no_hp' => $no_hp,
+        //     'nik' => $nik
+        // ]);
 
-        if ($insert) {
-            $_SESSION['popup_success'] = "Registrasi berhasil! Silakan login.";
-        } else {
-            $_SESSION['popup_fail'] = "Registrasi gagal.";
-        }
+        // if ($insert) {
+        //     $_SESSION['popup_success'] = "Registrasi berhasil! Silakan login.";
+        // } else {
+        //     $_SESSION['popup_fail'] = "Registrasi gagal.";
+        // }
 
         header("Location: index.php?action=register");
         exit;
@@ -80,76 +84,85 @@ class PasienController {
 
 
     // ================= LOGIN ===================
-public function Login() {
+    public function Login(){
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        include "View/Login.php";
-        return;
-    }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            include "View/Login.php";
+            return;
+        }
 
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
 
-    // Ambil data pasien berdasarkan email
-    $user = $this->pasienModel->getByEmail($email);
+        // Ambil data pasien berdasarkan email
+        $user = $this->pasienModel->getByEmail($email);
 
-    if (!$user) {
-        $_SESSION['login_error'] = "Email atau Password tidak ditemukan!";
-        header("Location: index.php?action=login");
+        if (!$user) {
+            $_SESSION['login_error'] = "Email atau Password tidak ditemukan!";
+            header("Location: index.php?action=login");
+            exit;
+        }
+
+        // Cek password
+        if (!password_verify($password, $user['password'])) {
+            $_SESSION['login_error'] = "Email atau Password salah!";
+            header("Location: index.php?action=login");
+            exit;
+        }
+
+        // SIMPAN SESSION LOGIN (fix!)
+        $_SESSION['pasien_id'] = $user['pasien_id'];   // FIX
+        $_SESSION['username'] = $user['username'];    // FIX
+        $_SESSION['nik'] = $user['nik'];
+
+        $_SESSION['login_success'] = "Selamat datang, " . $user['username'] . "!";
+
+        header("Location: index.php?action=homepage");
         exit;
     }
 
-    // Cek password
-    if (!password_verify($password, $user['password'])) {
-        $_SESSION['login_error'] = "Email atau Password salah!";
-        header("Location: index.php?action=login");
+    public function Logout()
+    {
+        session_start();
+
+        // Hapus semua session
+        session_unset();
+        session_destroy();
+
+        // Arahkan kembali ke homepage
+        header("Location: index.php?action=homepage");
         exit;
     }
-
-    // SIMPAN SESSION LOGIN (fix!)
-    $_SESSION['pasien_id']   = $user['pasien_id'];   // FIX
-    $_SESSION['username']  = $user['username'];    // FIX
-    $_SESSION['nik']       = $user['nik'];
-
-    $_SESSION['login_success'] = "Selamat datang, " . $user['username'] . "!";
-
-    header("Location: index.php?action=homepage");
-    exit;
-}
-public function Logout() {
-    session_start();
-
-    // Hapus semua session
-    session_unset();
-    session_destroy();
-
-    // Arahkan kembali ke homepage
-    header("Location: index.php?action=homepage");
-    exit;
-}
 
 
 
     // ================= HALAMAN HOME ===================
-    public function Homepage() {
+    public function Homepage()
+    {
         include "View/Homepage.php";
     }
-    public function Tentang(){
+    public function Tentang()
+    {
         include "View/Tentangkami.php";
     }
-    public function Layanan(){
+    public function Layanan()
+    {
         include "View/layanan.php";
     }
-    public function Temu(){
+    public function Temu()
+    {
         include "View/jadwal_temu.php";
     }
-    public function Profile(){
+    public function Profile()
+    {
         include "View/profile.php";
     }
-    public function Fasilitas(){
+    public function Fasilitas()
+    {
         include "View/fasilitas.php";
     }
-        public function Emergency(){
+    public function Emergency()
+    {
         include "View/emergencycall.php";
     }
 

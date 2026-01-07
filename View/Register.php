@@ -11,13 +11,23 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RS Davinza | Daftar</title>
+    <?php
+    // koneksi ke database
+    require_once __DIR__ . '/../koneksi.php';
+    ?>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="Style/register-style.css">
+
+    <?php
+    // file links.php ada di folder View
+    require_once __DIR__ . '/links.php';
+    ?>
 </head>
 
 <body>
+
+
+<?php include __DIR__ . "/Halaman/header.php"; ?>
 
 <!-- ====================== POPUP ===================== -->
 
@@ -38,12 +48,6 @@ if (session_status() === PHP_SESSION_NONE) {
 <?php unset($_SESSION['popup_fail']); endif; ?>
 
 <!-- =================== END POPUP =================== -->
-
-
-<?php include "koneksi.php"; ?>
-<?php include "links.php"; ?>
-<?php include __DIR__ . "/Halaman/header.php"; ?>
-
 
 <div class="main-content">
     <div class="row g-0 h-100 w-100">
@@ -71,8 +75,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         
                 ?>
 
-                <form action="index.php?action=register" method="POST">
-
+                <form action="index.php?action=kirim_kode_verifikasi" method="POST">
                     <div class="container-fluid">
                         <div class="row">    
 

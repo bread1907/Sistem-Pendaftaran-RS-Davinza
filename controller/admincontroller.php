@@ -4,13 +4,23 @@ class AdminController
 
     private $model;
     private $dokterModel;
+    private $pasienModel;
+    private $jadwalModel;
+    private $rekamModel;
 
     public function __construct(){
         include_once "../model/AdminModel.php";
-        include_once "../model/DokterModel.php";  // <-- TAMBAH BARIS INI
+        include_once "../model/DokterModel.php";
+        include_once "../model/pasienmodel.php";
+        include_once "../Dokter/model/jadwalmodel.php";
+        include_once "../Dokter/model/rekammedismodel.php";
+        
         global $conn;
         $this->model = new AdminModel($conn);
         $this->dokterModel = new DokterModel($conn);
+        $this->pasienModel = new PasienModel($conn);
+        $this->jadwalModel = new JadwalModel($conn);
+        $this->rekamModel  = new RekamMedisModel($conn);
     }
 
     // halaman login admin
@@ -287,5 +297,11 @@ class AdminController
         session_destroy();
         header("Location: index.php");
     }
+
+    public function LihatPasien() {
+        $pasienList = $this->pasienModel->getPasienWithSummary();
+        include "../Admin/Pasien.php";
+    }
+
 
 }

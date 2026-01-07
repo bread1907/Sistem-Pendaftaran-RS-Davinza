@@ -25,7 +25,7 @@
 </head>
 
 <body class="bg-light">
-    <?php include __DIR__ . "/Halaman_Admin/header_admin.php"; ?> <!-- Header terpisah -->
+    <?php include __DIR__ . "/Halaman_Admin/header_admin.php"; ?>
 
     <div class="container-fluid" id="main-content">
         <div class="row">
@@ -94,104 +94,81 @@
                 <!-- Patients Table -->
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="table-dark">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Usia</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Status</th>
+                                    <th>Dokter</th>
+                                    <th>Kunjungan Terakhir</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($pasienList)): ?>
+                                    <?php foreach ($pasienList as $p): ?>
+                                        <?php
+                                        // mapping jenis kelamin
+                                        $jk = $p['jenis_kelamin'] === 'L' ? 'Laki-laki' : ($p['jenis_kelamin'] === 'P' ? 'Perempuan' : $p['jenis_kelamin']);
+
+                                        // status: kalau belum pernah punya jadwal_temu
+                                        if (empty($p['kunjungan_terakhir_tgl'])) {
+                                            $status = 'Belum pernah berkunjung';
+                                            $badgeClass = 'bg-secondary';
+                                            $kunjunganTerakhir = '-';
+                                            $dokterTerakhir = '-';
+                                        } else {
+                                            $status = $p['status_terakhir']; // pending / selesai / batal
+                                            $badgeClass = match ($status) {
+                                                'selesai' => 'bg-success',
+                                                'pending' => 'bg-warning',
+                                                'batal' => 'bg-danger',
+                                                default => 'bg-secondary',
+                                            };
+                                            $dokterTerakhir = $p['dokter_terakhir'] ?? '-';
+                                            $kunjunganTerakhir = $p['kunjungan_terakhir_tgl'] . ' ' . substr($p['kunjungan_terakhir_jam'], 0, 5);
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($p['nama']) ?></td>
+                                            <?php
+                                                $usia = $p['usia'];
+                                                ?>
+                                                <td>
+                                                <?= $usia !== null ? (int)$usia . ' th' : '-' ?>
+                                                </td>
+
+                                            <td><?= htmlspecialchars($jk) ?></td>
+                                            <td>
+                                                <span class="badge <?= $badgeClass ?>">
+                                                    <?= htmlspecialchars($status) ?>
+                                                </span>
+                                            </td>
+                                            <td><?= htmlspecialchars($dokterTerakhir) ?></td>
+                                            <td><?= htmlspecialchars($kunjunganTerakhir) ?></td>
+                                            <td>
+                                                <!-- contoh aksi: detail & rekam medis -->
+                                                <a href="index.php?action=detail_pasien&id=<?= $p['pasien_id'] ?>"
+                                                    class="btn btn-sm btn-outline-primary">
+                                                    Detail
+                                                </a>
+                                                <a href="index.php?action=rekam_medis_pasien&id=<?= $p['pasien_id'] ?>"
+                                                    class="btn btn-sm btn-outline-success">
+                                                    Rekam Medis
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Nama</th>
-                                        <th>Usia</th>
-                                        <th>Jenis Kelamin</th>
-                                        <th>Status</th>
-                                        <th>Dokter</th>
-                                        <th>Kunjungan Terakhir</th>
-                                        <th>Aksi</th>
+                                        <td colspan="7" class="text-center text-muted">Belum ada data pasien.</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>P001</td>
-                                        <td>Siti Aminah</td>
-                                        <td>35</td>
-                                        <td>Perempuan</td>
-                                        <td><span class="badge bg-success">Aktif</span></td>
-                                        <td>Dr. Ahmad Santoso</td>
-                                        <td>2024-01-15</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning me-1">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>P002</td>
-                                        <td>Budi Santoso</td>
-                                        <td>28</td>
-                                        <td>Laki-laki</td>
-                                        <td><span class="badge bg-warning">Rawat Inap</span></td>
-                                        <td>Dr. Sari Indah</td>
-                                        <td>2024-01-14</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning me-1">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>P003</td>
-                                        <td>Maya Sari</td>
-                                        <td>45</td>
-                                        <td>Perempuan</td>
-                                        <td><span class="badge bg-success">Aktif</span></td>
-                                        <td>Dr. Budi Setiawan</td>
-                                        <td>2024-01-13</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning me-1">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>P004</td>
-                                        <td>Ahmad Rahman</td>
-                                        <td>52</td>
-                                        <td>Laki-laki</td>
-                                        <td><span class="badge bg-secondary">Tidak Aktif</span></td>
-                                        <td>Dr. Maya Putri</td>
-                                        <td>2023-12-20</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-warning me-1">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
 
@@ -251,7 +228,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Riwayat Medis</label>
-                                        <textarea class="form-control" rows="3" placeholder="Masukkan riwayat penyakit, alergi, dll."></textarea>
+                                        <textarea class="form-control" rows="3"
+                                            placeholder="Masukkan riwayat penyakit, alergi, dll."></textarea>
                                     </div>
                                 </form>
                             </div>
@@ -265,7 +243,5 @@
             </div>
         </div>
     </div>
-
 </body>
-
 </html>
