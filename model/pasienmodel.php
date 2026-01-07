@@ -20,47 +20,46 @@ class PasienModel
     }
 
     // Insert data pasien baru
-    public function insert($data){
-    $sql = "INSERT INTO pasien
+    public function insert($data)
+    {
+        $sql = "INSERT INTO pasien
         (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $stmt = mysqli_prepare($this->conn, $sql);
+        $stmt = mysqli_prepare($this->conn, $sql);
 
-    if (!$stmt) {
-        die("Prepare error: " . mysqli_error($this->conn));
+        if (!$stmt) {
+            die("Prepare error: " . mysqli_error($this->conn));
+        }
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            'ssssssss',
+            $data['nik'],
+            $data['email'],
+            $data['username'],
+            $data['password'],
+            $data['tanggal_lahir'],
+            $data['jenis_kelamin'],
+            $data['alamat'],
+            $data['no_hp']
+        );
+
+        if (!mysqli_stmt_execute($stmt)) {
+            die("Execute error: " . mysqli_stmt_error($stmt));
+        }
+
+        return true;
     }
 
-    mysqli_stmt_bind_param(
-        $stmt,
-        'ssssssss',
-        $data['nik'],
-        $data['email'],
-        $data['username'],
-        $data['password'],
-        $data['tanggal_lahir'],
-        $data['jenis_kelamin'],
-        $data['alamat'],
-        $data['no_hp']
-    );
 
-    if (!mysqli_stmt_execute($stmt)) {
-        die("Execute error: " . mysqli_stmt_error($stmt));
-    }
-
-    return true;
-}
-
-
-    public function setEmailVerified($email){
+    public function setEmailVerified($email)
+    {
         $sql = "UPDATE pasien SET email_verified = 1 WHERE email = ?";
         $stmt = mysqli_prepare($this->conn, $sql);
         mysqli_stmt_bind_param($stmt, 's', $email);
         mysqli_stmt_execute($stmt);
     }
-
-
-
 
     public function simpanKodeVerifikasi($email, $kode, $expiresAt)
     {
@@ -108,7 +107,7 @@ class PasienModel
     }
 
     // Ambil data pasien berdasarkan ID
-    public function getById($id)
+    public function getById($id): mixed
     {
         $sql = "SELECT * FROM $this->table WHERE pasien_id = ?";
         $stmt = $this->conn->prepare($sql);
@@ -116,6 +115,91 @@ class PasienModel
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
+
+    public function getPasienWithSummaryFiltered(string $status, string $jenisKelamin, string $sort): array
+    {
+        $where = [];
+        $params = [];
+        $types = '';
+
+        // Filter jenis kelamin
+        if ($jenisKelamin === 'L' || $jenisKelamin === 'P') {
+            $where[] = 'p.jenis_kelamin = ?';
+            $params[] = $jenisKelamin;
+            $types .= 's';
+        }
+
+        // Filter status kunjungan
+        // - 'belum_pernah' => pasien tanpa jadwal_temu
+        // - 'pending' / 'selesai' / 'batal' => status_terakhir dari join
+        if ($status === 'belum_pernah') {
+            $where[] = 'jt_terakhir.tanggal_temu IS NULL';
+        } elseif (in_array($status, ['pending', 'selesai', 'batal'], true)) {
+            $where[] = 'jt_terakhir.status = ?';
+            $params[] = $status;
+            $types .= 's';
+        }
+
+        // Sorting nama
+        $orderBy = 'p.username ASC';
+        if ($sort === 'z-a') {
+            $orderBy = 'p.username DESC';
+        }
+
+        // Susun klausa WHERE
+        $whereSql = '';
+        if (!empty($where)) {
+            $whereSql = 'WHERE ' . implode(' AND ', $where);
+        }
+
+        $sql = "
+        SELECT
+            p.pasien_id,
+            p.username       AS nama,
+            p.tanggal_lahir,
+            p.jenis_kelamin,
+            p.alamat,
+            p.no_hp,
+            TIMESTAMPDIFF(YEAR, p.tanggal_lahir, CURDATE()) AS usia,
+            jt_terakhir.tanggal_temu    AS kunjungan_terakhir_tgl,
+            jt_terakhir.jam_temu        AS kunjungan_terakhir_jam,
+            jt_terakhir.status          AS status_terakhir,
+            d.nama                      AS dokter_terakhir
+        FROM pasien p
+        LEFT JOIN (
+            SELECT j1.*
+            FROM jadwal_temu j1
+            JOIN (
+                SELECT pasien_id, MAX(CONCAT(tanggal_temu, ' ', jam_temu)) AS max_waktu
+                FROM jadwal_temu
+                GROUP BY pasien_id
+            ) j2
+              ON j1.pasien_id = j2.pasien_id
+             AND CONCAT(j1.tanggal_temu, ' ', j1.jam_temu) = j2.max_waktu
+        ) jt_terakhir
+          ON jt_terakhir.pasien_id = p.pasien_id
+        LEFT JOIN dokter d
+          ON d.dokter_id = jt_terakhir.dokter_id
+        $whereSql
+        ORDER BY $orderBy
+    ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $data = [];
+        while ($row = $res->fetch_assoc()) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
 
     public function getPasienWithSummary()
     {
@@ -164,6 +248,91 @@ class PasienModel
         return $data;
     }
 
+    public function getFiltered($status, $jenis_kelamin, $sort)
+    {
+        $where = [];
+        $params = [];
+        $types = '';
+
+        // Filter by status
+        if ($status !== '') {
+            if ($status === 'belum_pernah') {
+                $where[] = "jt_terakhir.status IS NULL";
+            } else {
+                $where[] = "jt_terakhir.status = ?";
+                $params[] = $status;
+                $types .= 's';
+            }
+        }
+
+        // Filter by jenis_kelamin
+        if ($jenis_kelamin !== '') {
+            $where[] = "p.jenis_kelamin = ?";
+            $params[] = $jenis_kelamin;
+            $types .= 's';
+        }
+
+        // Determine sort order
+        $orderBy = "p.username ASC";
+        if ($sort === 'z-a') {
+            $orderBy = "p.username DESC";
+        }
+
+        $sql = "
+        SELECT
+            p.pasien_id,
+            p.username      AS nama,
+            p.tanggal_lahir,
+            p.jenis_kelamin,
+            p.alamat,
+            p.no_hp,
+
+            TIMESTAMPDIFF(YEAR, p.tanggal_lahir, CURDATE()) AS usia,
+
+            jt_terakhir.tanggal_temu    AS kunjungan_terakhir_tgl,
+            jt_terakhir.jam_temu        AS kunjungan_terakhir_jam,
+            jt_terakhir.status          AS status_terakhir,
+            d.nama                      AS dokter_terakhir
+
+        FROM pasien p
+
+        LEFT JOIN (
+            SELECT j1.*
+            FROM jadwal_temu j1
+            JOIN (
+                SELECT pasien_id, MAX(CONCAT(tanggal_temu, ' ', jam_temu)) AS max_waktu
+                FROM jadwal_temu
+                GROUP BY pasien_id
+            ) j2
+            ON j1.pasien_id = j2.pasien_id
+            AND CONCAT(j1.tanggal_temu, ' ', j1.jam_temu) = j2.max_waktu
+        ) jt_terakhir
+        ON jt_terakhir.pasien_id = p.pasien_id
+
+        LEFT JOIN dokter d
+        ON d.dokter_id = jt_terakhir.dokter_id
+        ";
+
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        $sql .= " ORDER BY " . $orderBy;
+
+        $stmt = mysqli_prepare($this->conn, $sql);
+        if (!empty($params)) {
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+        }
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $rows = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     // Update data pasien
     public function update($id, $data)
     {
@@ -186,10 +355,36 @@ class PasienModel
     // Hapus pasien
     public function delete($id)
     {
-        $sql = "DELETE FROM $this->table WHERE pasien_id=?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-        return $stmt->execute();
+        // Start transaction
+        $this->conn->begin_transaction();
+
+        try {
+            // Delete from rekam_medis first
+            $sql1 = "DELETE FROM rekam_medis WHERE pasien_id=?";
+            $stmt1 = $this->conn->prepare($sql1);
+            $stmt1->bind_param("i", $id);
+            $stmt1->execute();
+
+            // Delete from jadwal_temu
+            $sql2 = "DELETE FROM jadwal_temu WHERE pasien_id=?";
+            $stmt2 = $this->conn->prepare($sql2);
+            $stmt2->bind_param("i", $id);
+            $stmt2->execute();
+
+            // Finally delete from pasien
+            $sql3 = "DELETE FROM $this->table WHERE pasien_id=?";
+            $stmt3 = $this->conn->prepare($sql3);
+            $stmt3->bind_param("i", $id);
+            $result = $stmt3->execute();
+
+            // Commit transaction
+            $this->conn->commit();
+            return $result;
+        } catch (Exception $e) {
+            // Rollback on error
+            $this->conn->rollback();
+            return false;
+        }
     }
 }
 ?>

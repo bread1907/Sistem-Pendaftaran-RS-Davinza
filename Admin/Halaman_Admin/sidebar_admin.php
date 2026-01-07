@@ -17,9 +17,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?action=lihat_pasien">Pasien</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php?action=pengaturan">Pengaturan</a>
-                    </li>
                 </ul>
             </div>
         </div>

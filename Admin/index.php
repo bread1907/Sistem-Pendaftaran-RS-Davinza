@@ -47,6 +47,17 @@ switch ($action) {
     case 'pengaturan':
         $admincontroller->Pengaturan();
         break;
+    case 'hapus_pasien':
+        if(isset($_GET['id'])){
+            $id = $_GET['id'];
+            $admincontroller->HapusPasien($id);
+        } else {
+            echo "<script>
+                    alert('ID pasien tidak diberikan.');
+                    window.location.href = 'index.php?action=lihat_pasien';
+                </script>";
+        }
+        break;
     default:
         $admincontroller->LoginPage();
         break;

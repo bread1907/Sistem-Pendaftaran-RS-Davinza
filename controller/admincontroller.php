@@ -172,6 +172,32 @@ class AdminController
         return $newName;
     }
 
+    // Fungsi hapus pasien
+    public function HapusPasien($id){
+        $pasien = $this->pasienModel->getById($id);
+
+        if(!$pasien){
+            echo "<script>
+                    alert('Pasien dengan ID $id tidak ditemukan.');
+                    window.location.href = 'index.php?action=lihat_pasien';
+                  </script>";
+            return;
+        }
+
+        if($this->pasienModel->delete($id)){
+            echo "<script>
+                    alert('Pasien berhasil dihapus.');
+                    window.location.href = 'index.php?action=lihat_pasien';
+                  </script>";
+        } else {
+            echo "<script>
+                    alert('Gagal menghapus pasien.');
+                    window.location.href = 'index.php?action=lihat_pasien';
+                  </script>";
+        }
+    }
+
+
     public function deleteDokter() {
         $this->dokterModel->deleteById($_GET['id']);
         header("Location: ../Admin/index.php?action=lihat_dokter");
@@ -298,10 +324,19 @@ class AdminController
         header("Location: index.php");
     }
 
+
     public function LihatPasien() {
-        $pasienList = $this->pasienModel->getPasienWithSummary();
-        include "../Admin/Pasien.php";
-    }
+    // Ambil filter dari query string
+    $status       = $_GET['status']        ?? '';
+    $jenisKelamin = $_GET['jenis_kelamin'] ?? '';
+    $sort         = $_GET['sort']          ?? 'a-z';
+
+    // Ambil data dengan filter
+    $pasienList = $this->pasienModel->getPasienWithSummaryFiltered($status, $jenisKelamin, $sort);
+
+    include "../Admin/Pasien.php";
+}
+
 
 
 }
