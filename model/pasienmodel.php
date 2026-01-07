@@ -1,14 +1,17 @@
 <?php
-class PasienModel {
+class PasienModel
+{
     private $conn;
     private $table = "pasien";
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
     // Cek email apakah sudah terdaftar
-    public function cekEmail($email) {
+    public function cekEmail($email)
+    {
         $sql = "SELECT * FROM $this->table WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $email);
@@ -17,10 +20,11 @@ class PasienModel {
     }
 
     // Insert data pasien baru
-    public function insert(array $data) {
+    public function insert($data)
+    {
         $sql = "INSERT INTO pasien
-            (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                (nik, email, username, password, tanggal_lahir, jenis_kelamin, alamat, no_hp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($this->conn, $sql);
         mysqli_stmt_bind_param(
             $stmt,
@@ -37,9 +41,41 @@ class PasienModel {
         mysqli_stmt_execute($stmt);
     }
 
+    public function simpanKodeVerifikasi($email, $kode, $expiresAt){
+        // hapus kode lama untuk email ini
+        $sqlDel = "DELETE FROM email_verifikasi WHERE email = ?";
+        $stmtDel = mysqli_prepare($this->conn, $sqlDel);
+        mysqli_stmt_bind_param($stmtDel, 's', $email);
+        mysqli_stmt_execute($stmtDel);
+
+        // insert kode baru
+        $sql = "INSERT INTO email_verifikasi (email, kode, expires_at) VALUES (?, ?, ?)";
+        $stmt = mysqli_prepare($this->conn, $sql);
+        mysqli_stmt_bind_param($stmt, 'sss', $email, $kode, $expiresAt);
+        mysqli_stmt_execute($stmt);
+    }
+
+    public function cariKodeVerifikasi($email, $kode){
+        $sql = "SELECT * FROM email_verifikasi WHERE email = ? AND kode = ? LIMIT 1";
+        $stmt = mysqli_prepare($this->conn, $sql);
+        mysqli_stmt_bind_param($stmt, 'ss', $email, $kode);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        return mysqli_fetch_assoc($res) ?: null;
+    }
+
+    public function tandaiKodeTerpakai($id){
+        $sql = "UPDATE email_verifikasi SET is_used = 1 WHERE id = ?";
+        $stmt = mysqli_prepare($this->conn, $sql);
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_execute($stmt);
+    }
+
+
 
     // Ambil data pasien berdasarkan email
-    public function getByEmail($email) {
+    public function getByEmail($email)
+    {
         $sql = "SELECT * FROM $this->table WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $email);
@@ -48,7 +84,8 @@ class PasienModel {
     }
 
     // Ambil data pasien berdasarkan ID
-    public function getById($id) {
+    public function getById($id)
+    {
         $sql = "SELECT * FROM $this->table WHERE pasien_id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $id);
@@ -56,7 +93,8 @@ class PasienModel {
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function getPasienWithSummary() {
+    public function getPasienWithSummary()
+    {
         $sql = "
         SELECT
             p.pasien_id,
@@ -103,10 +141,12 @@ class PasienModel {
     }
 
     // Update data pasien
-    public function update($id, $data) {
+    public function update($id, $data)
+    {
         $sql = "UPDATE $this->table SET email=?, username=?, tanggal_lahir=?, jenis_kelamin=?, alamat=?, no_hp=? nik=? WHERE pasien_id=?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssssssi",
+        $stmt->bind_param(
+            "sssssssi",
             $data['email'],
             $data['username'],
             $data['tanggal_lahir'],
@@ -120,7 +160,8 @@ class PasienModel {
     }
 
     // Hapus pasien
-    public function delete($id) {
+    public function delete($id)
+    {
         $sql = "DELETE FROM $this->table WHERE pasien_id=?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $id);

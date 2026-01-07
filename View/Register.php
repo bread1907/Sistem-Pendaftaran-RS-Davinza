@@ -167,7 +167,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         </div>
                     </div>
 
-                    <button type="submit" name="submit" class="btn btn-primary w-100 mt-3">Daftar</button>
+                    <button type="submit" name="register" class="btn btn-primary w-100 mt-3">Daftar</button>
 
                     <p class="text-center mt-4">
                         Sudah punya akun?
