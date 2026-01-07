@@ -144,11 +144,12 @@ $spesialisList = $dokterModel->getSpesialis();
                 <select name="spesialis" class="form-select" required>
                   <option value="">-- Pilih Spesialis --</option>
 
-                  <?php while ($s = mysqli_fetch_assoc($spesialisList)) : ?>
-                    <option value="<?= $s['spesialis']; ?>">
-                        <?= $s['spesialis']; ?>
-                    </option>
-                  <?php endwhile; ?>
+                  <?php foreach ($spesialisList as $spesialis): ?>
+                      <option value="<?= htmlspecialchars($spesialis); ?>">
+                          <?= htmlspecialchars($spesialis); ?>
+                      </option>
+                  <?php endforeach; ?>
+
 
                 </select>
               </div>
